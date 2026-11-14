@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUẬT THƯƠNG MẠI (2 TC) - Interactive 3-Hour Mastery Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            navy: {
+              50: '#F0F4F8',
+              100: '#D9E2EC',
+              200: '#BCCCDC',
+              700: '#1E293B',
+              800: '#0F172A',
+              900: '#0A0F1D',
+            },
+            cobalt: {
+              DEFAULT: '#2563EB',
+              hover: '#1D4ED8',
+              light: '#EFF6FF',
+              dark: '#1E40AF',
+            },
+            amberAccent: {
+              DEFAULT: '#F59E0B',
+              light: '#FEF3C7',
+              dark: '#B45309',
+            },
+            emeraldAccent: {
+              DEFAULT: '#10B981',
+              light: '#D1FAE5',
+              dark: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbars & micro-interactions */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    .dark .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    .flashcard {
+      perspective: 1000px;
+    }
+    .flashcard-inner {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flashcard.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+    .flashcard-front, .flashcard-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flashcard-back {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-navy-900 dark:text-slate-100 font-sans antialiased min-h-full flex flex-col transition-colors duration-200">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-navy-800/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 lg:px-6 py-2.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-cobalt text-white flex items-center justify-center font-bold shadow-md shadow-cobalt/20">
+        <i data-lucide="scale" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-cobalt bg-cobalt/10 dark:bg-cobalt/20 px-2 py-0.5 rounded-full">ĐH Thủy Lợi • 2 Tín chỉ</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">Quy định mới 2025–2026</span>
+        </div>
+        <h1 class="text-base sm:text-lg font-extrabold text-navy-800 dark:text-white tracking-tight">LUẬT THƯƠNG MẠI — DASHBOARD HỌC CẤP TỐC 3 TIẾNG</h1>
+      </div>
+    </div>
+
+    <!-- Quick action buttons -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Total Progress Bar Top Header -->
+      <div class="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-navy-700/60 px-3 py-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+        <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i>
+        <span class="text-xs font-medium text-slate-600 dark:text-slate-300">Tiến độ tổng:</span>
+        <div class="w-24 bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+          <div id="topProgressBar" class="bg-gradient-to-r from-cobalt to-emeraldAccent h-full w-0 transition-all duration-500"></div>
+        </div>
+        <span id="topProgressPercent" class="text-xs font-bold text-cobalt dark:text-blue-400">0%</span>
+      </div>
+
+      <!-- Quick Reference Drawer Trigger (Mobile/Tablet) -->
+      <button onclick="toggleQuickRefModal()" class="xl:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-navy-700 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5" title="Mở Tra Cứu Nhanh">
+        <i data-lucide="book-marked" class="w-4 h-4 text-amber-500"></i>
+        <span class="hidden sm:inline">Tra Cứu</span>
+      </button>
+
+      <!-- Dark / Light Mode Toggle -->
+      <button onclick="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-navy-700 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors" title="Chuyển chế độ Sáng / Tối">
+        <i id="themeIconSun" data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+        <i id="themeIconMoon" data-lucide="moon" class="w-4 h-4 block dark:hidden text-slate-600"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION LAYOUT: 3-COLUMN SMART GRID -->
+  <div class="flex-1 max-w-[1920px] w-full mx-auto grid grid-cols-1 xl:grid-cols-12 gap-0 overflow-hidden">
+
+    <!-- LEFT COLUMN: SPRINT ROADMAP & 180-MIN POMODORO (Col span 3) -->
+    <aside class="xl:col-span-3 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-navy-800/60 p-4 lg:p-5 flex flex-col gap-5 overflow-y-auto max-h-[calc(100vh-61px)]">
+      
+      <!-- 180-MINUTE SPRINT TIMER (POMODORO) -->
+      <div class="bg-gradient-to-br from-navy-800 to-slate-900 dark:from-navy-900 dark:to-slate-950 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-slate-700/50">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 rounded-lg bg-cobalt/30 text-blue-300">
+              <i data-lucide="timer" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Đồng Hồ 180 Phút</h2>
+          </div>
+          <span id="timerBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emeraldAccent/20 text-emerald-300 border border-emeraldAccent/30">Chế độ Học</span>
+        </div>
+
+        <!-- Big Countdown Display -->
+        <div class="text-center py-2">
+          <div id="pomodoroTime" class="text-4xl sm:text-5xl font-extrabold tracking-tight font-mono text-white drop-shadow">
+            180:00
+          </div>
+          <p id="timerCurrentSprintName" class="text-xs text-blue-200 mt-1.5 font-medium">Chặng 1: Khái quát Luật Thương mại (30p)</p>
+        </div>
+
+        <!-- Timer Controls -->
+        <div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-700/60">
+          <button id="timerPlayBtn" onclick="toggleTimer()" class="flex-1 py-2 px-3 bg-cobalt hover:bg-cobalt-hover text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow transition-all active:scale-95">
+            <i id="timerPlayIcon" data-lucide="play" class="w-4 h-4 fill-current"></i>
+            <span id="timerPlayText">Bắt đầu</span>
+          </button>
+          <button onclick="resetTimer()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium text-xs border border-slate-700 transition" title="Đặt lại 180 phút">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+          <button onclick="addTimerMinutes(15)" class="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium text-xs border border-slate-700 transition" title="Cộng 15 phút">
+            +15m
+          </button>
+        </div>
+      </div>
+
+      <!-- SPRINT ROADMAP NAVIGATION (5 SPRINTS) -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lộ Trình Tinh Gọn (5 Chặng)</h2>
+          <span class="text-xs text-slate-400">180 phút</span>
+        </div>
+
+        <!-- SPRINT 1 BUTTON -->
+        <button onclick="switchTab('sprint1')" id="nav-sprint1" class="sprint-nav-btn w-full text-left p-3.5 rounded-xl border border-cobalt bg-cobalt/5 dark:bg-cobalt/15 transition-all flex items-start gap-3 group relative">
+          <div class="w-7 h-7 rounded-lg bg-cobalt text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">1</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-cobalt dark:text-blue-400 uppercase tracking-wide">Chặng 1 • 30 Phút</span>
+              <span class="text-[11px] font-semibold text-slate-400">CLO1</span>
+            </div>
+            <p class="text-sm font-bold text-navy-800 dark:text-slate-100 truncate group-hover:text-cobalt">Khái Quát Luật Thương Mại</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">3 Dấu hiệu thương nhân, Nguồn luật, Áp dụng LTM</p>
+          </div>
+          <div id="check-sprint1" class="hidden text-emerald-500 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+        </button>
+
+        <!-- SPRINT 2 BUTTON -->
+        <button onclick="switchTab('sprint2')" id="nav-sprint2" class="sprint-nav-btn w-full text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-navy-800/40 transition-all flex items-start gap-3 group relative">
+          <div class="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Chặng 2 • 50 Phút</span>
+              <span class="text-[11px] font-semibold text-slate-400">CLO2</span>
+            </div>
+            <p class="text-sm font-bold text-navy-800 dark:text-slate-100 truncate group-hover:text-cobalt">Chủ Thể Kinh Doanh</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Hộ KD, DNTN, Hợp danh, TNHH, CTCP, Điểm mới 2025</p>
+          </div>
+          <div id="check-sprint2" class="hidden text-emerald-500 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+        </button>
+
+        <!-- SPRINT 3 BUTTON -->
+        <button onclick="switchTab('sprint3')" id="nav-sprint3" class="sprint-nav-btn w-full text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-navy-800/40 transition-all flex items-start gap-3 group relative">
+          <div class="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Chặng 3 • 50 Phút</span>
+              <span class="text-[11px] font-semibold text-slate-400">CLO3</span>
+            </div>
+            <p class="text-sm font-bold text-navy-800 dark:text-slate-100 truncate group-hover:text-cobalt">Hợp Đồng & Hoạt Động TM</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Chuyển rủi ro, 4 Trung gian, Chế tài 8%, TMĐT 2025</p>
+          </div>
+          <div id="check-sprint3" class="hidden text-emerald-500 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+        </button>
+
+        <!-- SPRINT 4 BUTTON -->
+        <button onclick="switchTab('sprint4')" id="nav-sprint4" class="sprint-nav-btn w-full text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-navy-800/40 transition-all flex items-start gap-3 group relative">
+          <div class="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">4</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Chặng 4 • 35 Phút</span>
+              <span class="text-[11px] font-semibold text-slate-400">CLO4</span>
+            </div>
+            <p class="text-sm font-bold text-navy-800 dark:text-slate-100 truncate group-hover:text-cobalt">Phục Hồi, Phá Sản & Tranh Chấp</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">Luật 2025 (hiệu lực 2026), Trọng tài vs Tòa án khu vực</p>
+          </div>
+          <div id="check-sprint4" class="hidden text-emerald-500 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+        </button>
+
+        <!-- SPRINT 5 BUTTON -->
+        <button onclick="switchTab('sprint5')" id="nav-sprint5" class="sprint-nav-btn w-full text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-navy-800/40 transition-all flex items-start gap-3 group relative">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">5</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">Chặng 5 • 15 Phút</span>
+              <span class="text-[11px] font-bold text-red-500 bg-red-50 dark:bg-red-950/40 px-1.5 py-0.2 rounded">Thực chiến</span>
+            </div>
+            <p class="text-sm font-bold text-navy-800 dark:text-slate-100 truncate group-hover:text-amber-500">Phòng Luyện Thi & Tình Huống</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">20 Câu Bẫy Pháp Lý + 4 Tình Huống Thảo Luận</p>
+          </div>
+          <div id="check-sprint5" class="hidden text-emerald-500 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+        </button>
+      </div>
+
+      <!-- Quick Learning Stat Badge -->
+      <div class="mt-auto pt-3 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 space-y-1.5">
+        <div class="flex justify-between items-center">
+          <span>Tổng số ví dụ slide:</span>
+          <span class="font-bold text-slate-700 dark:text-slate-200">15 / 15 ví dụ</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Tình huống thảo luận:</span>
+          <span class="font-bold text-slate-700 dark:text-slate-200">4 / 4 chương</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Văn bản mới 2025–2026:</span>
+          <span class="font-bold text-amber-600 dark:text-amber-400">Cập nhật 100%</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MIDDLE COLUMN: MAIN LEARNING CANVAS (Col span 6 on XL) -->
+    <main class="xl:col-span-6 bg-slate-50 dark:bg-navy-900/50 p-4 lg:p-6 overflow-y-auto max-h-[calc(100vh-61px)] space-y-6">
+
+      <!-- SPRINT 1 CONTAINER: KHÁI QUÁT LUẬT THƯƠNG MẠI -->
+      <section id="sprint1-content" class="sprint-section space-y-6">
+        
+        <!-- Sprint 1 Header Banner -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-cobalt/5 dark:bg-cobalt/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded-lg bg-cobalt text-white">Chặng 1 • 30 Phút</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Chuẩn đầu ra: CLO1</span>
+          </div>
+          <h2 class="text-xl font-extrabold text-navy-800 dark:text-white">Chương 1: Khái Quát Về Luật Thương Mại</h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+            Nắm vững 3 nhóm quan hệ điều chỉnh, thứ tự áp dụng nguồn luật, 3 dấu hiệu thương nhân và phạm vi áp dụng Luật Thương mại đối với bên không nhằm mục đích sinh lợi.
+          </p>
+        </div>
+
+        <!-- VISUAL FLOWCHART: 3 NHÓM QUAN HỆ & THỨ TỰ NGUỒN LUẬT -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="git-branch" class="w-4 h-4 text-cobalt"></i>
+              Sơ Đồ 3 Nhóm Quan Hệ Điều Chỉnh & Thứ Tự Áp Dụng Nguồn Luật
+            </h3>
+            <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">Điều 4 LTM 2005</span>
+          </div>
+
+          <!-- 3 Groups Flow Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200/80 dark:border-slate-700">
+              <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-cobalt dark:text-blue-300 flex items-center justify-center font-bold text-xs mb-2">1</div>
+              <h4 class="text-xs font-bold text-navy-800 dark:text-slate-200">Quan hệ Tổ chức & Nội bộ</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Thành lập, quản trị, tổ chức lại, giải thể; quan hệ giữa thành viên/cổ đông với công ty (Chương 2).</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200/80 dark:border-slate-700">
+              <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emeraldAccent dark:text-emerald-300 flex items-center justify-center font-bold text-xs mb-2">2</div>
+              <h4 class="text-xs font-bold text-navy-800 dark:text-slate-200">Quan hệ Hoạt động Thương mại</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Mua bán hàng hóa, cung ứng dịch vụ, trung gian, xúc tiến thương mại, thương mại điện tử (Chương 3).</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200/80 dark:border-slate-700">
+              <div class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-300 flex items-center justify-center font-bold text-xs mb-2">3</div>
+              <h4 class="text-xs font-bold text-navy-800 dark:text-slate-200">Xử lý Khó khăn & Tranh chấp</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Phục hồi hoạt động kinh doanh, phá sản doanh nghiệp/HTX; thương lượng, hòa giải, trọng tài, tòa án (Chương 4).</p>
+            </div>
+          </div>
+
+          <!-- Hierarchy of Law Application -->
+          <div class="mt-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-navy-900 dark:to-slate-800/80 border border-blue-200 dark:border-slate-700">
+            <h4 class="text-xs font-extrabold uppercase text-cobalt dark:text-blue-400 tracking-wide mb-2 flex items-center gap-1.5">
+              <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+              Thứ tự ưu tiên áp dụng nguồn luật (Quy tắc 3 bậc):
+            </h4>
+            <div class="flex flex-col sm:flex-row items-center gap-2 text-xs font-semibold">
+              <div class="flex-1 w-full bg-white dark:bg-navy-800 p-2.5 rounded-lg border border-blue-200 dark:border-slate-700 text-center shadow-sm">
+                <span class="block text-[10px] text-slate-400 uppercase font-bold">BẬC 1 (ƯU TIÊN SỐ 1)</span>
+                <span class="text-cobalt dark:text-blue-300 font-bold">Luật chuyên ngành</span>
+                <span class="block text-[10px] text-slate-500 font-normal">Luật Các TCTD, Dược, Xây dựng...</span>
+              </div>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-cobalt shrink-0 rotate-90 sm:rotate-0"></i>
+              <div class="flex-1 w-full bg-white dark:bg-navy-800 p-2.5 rounded-lg border border-blue-200 dark:border-slate-700 text-center shadow-sm">
+                <span class="block text-[10px] text-slate-400 uppercase font-bold">BẬC 2 (LUẬT CHUNG VỀ TM)</span>
+                <span class="text-indigo-600 dark:text-indigo-300 font-bold">Luật Thương mại 2005</span>
+                <span class="block text-[10px] text-slate-500 font-normal">Khi luật chuyên ngành không quy định</span>
+              </div>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-cobalt shrink-0 rotate-90 sm:rotate-0"></i>
+              <div class="flex-1 w-full bg-white dark:bg-navy-800 p-2.5 rounded-lg border border-blue-200 dark:border-slate-700 text-center shadow-sm">
+                <span class="block text-[10px] text-slate-400 uppercase font-bold">BẬC 3 (LUẬT GỐC/CHUNG)</span>
+                <span class="text-slate-700 dark:text-slate-200 font-bold">Bộ luật Dân sự 2015</span>
+                <span class="block text-[10px] text-slate-500 font-normal">Khi LTM không có quy định</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-2 italic">
+              * Lưu ý ngoại lệ quốc tế: <strong>Công ước Viên 1980 (CISG)</strong> có hiệu lực từ 01/01/2017 được ưu tiên áp dụng so với luật trong nước khi hợp đồng mua bán hàng hóa quốc tế đáp ứng điều kiện.
+            </p>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE CHECKER: "AI LÀ THƯƠNG NHÂN?" -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <i data-lucide="user-check" class="w-4 h-4 text-emeraldAccent"></i>
+                Công Cụ Tương Tác: Kiểm Tra Nhanh "Ai Là Thương Nhân?"
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Dựa trên 3 dấu hiệu pháp lý bắt buộc (Điều 6 Luật Thương mại 2005)</p>
+            </div>
+            <button onclick="resetMerchantTester()" class="text-xs text-cobalt hover:underline flex items-center gap-1">
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Thử lại
+            </button>
+          </div>
+
+          <!-- 3 Checkbox criteria -->
+          <div class="space-y-2.5 bg-slate-50 dark:bg-navy-700/40 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+            <label class="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="mSign1" onchange="checkMerchantStatus()" class="mt-0.5 rounded text-cobalt focus:ring-cobalt w-4 h-4">
+              <span class="text-xs text-slate-700 dark:text-slate-200">
+                <strong>Dấu hiệu 1 (Chủ thể):</strong> Là tổ chức kinh tế được thành lập hợp pháp hoặc cá nhân có năng lực hành vi dân sự đầy đủ.
+              </span>
+            </label>
+            <label class="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="mSign2" onchange="checkMerchantStatus()" class="mt-0.5 rounded text-cobalt focus:ring-cobalt w-4 h-4">
+              <span class="text-xs text-slate-700 dark:text-slate-200">
+                <strong>Dấu hiệu 2 (Độc lập):</strong> Hoạt động thương mại độc lập — nhân danh chính mình và tự chịu trách nhiệm tài sản.
+              </span>
+            </label>
+            <label class="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="mSign3" onchange="checkMerchantStatus()" class="mt-0.5 rounded text-cobalt focus:ring-cobalt w-4 h-4">
+              <span class="text-xs text-slate-700 dark:text-slate-200">
+                <strong>Dấu hiệu 3 (Thường xuyên & ĐKKD):</strong> Hoạt động thương mại thường xuyên, mang tính nghề nghiệp, là nguồn thu nhập chủ yếu và có Đăng ký kinh doanh (hoặc thuộc diện phải ĐKKD).
+              </span>
+            </label>
+          </div>
+
+          <!-- Dynamic Output Card -->
+          <div id="merchantResultBox" class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 flex items-start gap-3">
+            <i id="merchantResultIcon" data-lucide="help-circle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5"></i>
+            <div>
+              <p id="merchantResultTitle" class="text-xs font-bold text-amber-800 dark:text-amber-300">Chưa đủ điều kiện xác định</p>
+              <p id="merchantResultDesc" class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+                Vui lòng tick chọn các tiêu chuẩn thực tế của chủ thể cần kiểm tra để hệ thống đối chiếu pháp lý.
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Case Test Buttons -->
+          <div class="pt-2">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Hoặc nạp nhanh tình huống mẫu trong slide:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button onclick="loadSampleMerchant('binh')" class="p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-white dark:bg-navy-800 text-left text-xs transition">
+                <span class="font-bold text-navy-800 dark:text-white block">Anh Bình (Ví dụ 1)</span>
+                <span class="text-[11px] text-slate-500">Đăng ký HKD bán VLXD</span>
+              </button>
+              <button onclick="loadSampleMerchant('an')" class="p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-white dark:bg-navy-800 text-left text-xs transition">
+                <span class="font-bold text-navy-800 dark:text-white block">Chị An (Ví dụ 1)</span>
+                <span class="text-[11px] text-slate-500">Bán bánh mì dạo hằng ngày</span>
+              </button>
+              <button onclick="loadSampleMerchant('m_online')" class="p-2.5 rounded-lg border border-amber-300 dark:border-amber-700 hover:border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 text-left text-xs transition">
+                <span class="font-bold text-amber-800 dark:text-amber-300 block">Sinh viên M (Thảo luận)</span>
+                <span class="text-[11px] text-slate-500">Bán online 150 đơn/tháng</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAILED CASE ANALYSIS: VÍ DỤ 1, VÍ DỤ 2 & TÌNH HUỐNG SINH VIÊN M -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            Lời Giải Chuẩn & Căn Cứ Pháp Lý Các Ví Dụ Chương 1
+          </h3>
+
+          <!-- Accordion 1: Ví dụ 1 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd1')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt text-[10px] font-extrabold">VÍ DỤ 1</span>
+                Chị An bán bánh mì dạo vs Anh Bình bán VLXD vs CLB Sinh viên từ thiện
+              </span>
+              <i id="icon-acc-vd1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd1" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 6, Điều 7 Luật Thương mại 2005; Nghị định 39/2007/NĐ-CP.</p>
+              <ul class="list-disc pl-4 space-y-1 text-slate-600 dark:text-slate-300">
+                <li><strong>Anh Bình:</strong> Đủ 3 dấu hiệu (cá nhân kinh doanh độc lập, thường xuyên, có đăng ký hộ kinh doanh) &rarr; <span class="text-emerald-600 dark:text-emerald-400 font-bold">LÀ THƯƠNG NHÂN</span>.</li>
+                <li><strong>Chị An:</strong> Hoạt động độc lập, thường xuyên nhưng thuộc diện cá nhân hoạt động thương mại không phải đăng ký kinh doanh (bán hàng rong, quà vặt theo NĐ 39/2007/NĐ-CP) &rarr; <span class="text-red-500 font-bold">KHÔNG PHẢI THƯƠNG NHÂN</span>.</li>
+                <li><strong>CLB Sinh viên trường X:</strong> Hoạt động 1 lần gây quỹ, không thường xuyên, không đăng ký kinh doanh, mục đích từ thiện (không sinh lợi) &rarr; <span class="text-red-500 font-bold">KHÔNG PHẢI THƯƠNG NHÂN</span>.</li>
+              </ul>
+              <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 font-medium">
+                <i data-lucide="check" class="w-3.5 h-3.5 inline mr-1"></i> <strong>Mẹo nhớ thi:</strong> Bán hàng rong và bán tài sản cá nhân 1 lần (xe cũ, điện thoại cũ) KHÔNG bao giờ là thương nhân.
+              </div>
+            </div>
+          </div>
+
+          <!-- Accordion 2: Ví dụ 2 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd2')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt text-[10px] font-extrabold">VÍ DỤ 2</span>
+                Cty Tin học Hưng Thịnh bán 200 máy tính cho Trường Đại học Y (Bên không nhằm sinh lợi)
+              </span>
+              <i id="icon-acc-vd2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd2" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Khoản 3 Điều 1, Điều 2 Luật Thương mại 2005; Luật Đấu thầu; BLDS 2015.</p>
+              <div class="space-y-1 text-slate-600 dark:text-slate-300">
+                <p>1. <strong>Mục đích sinh lợi:</strong> Cty Hưng Thịnh bán vì mục đích sinh lợi; Trường Đại học Y mua để phục vụ giảng dạy, nghiên cứu khoa học &rarr; bên không nhằm mục đích sinh lợi.</p>
+                <p>2. <strong>Luật điều chỉnh:</strong> Khoản 3 Điều 1 LTM quy định: Hoạt động của bên không nhằm mục đích sinh lợi giao dịch với thương nhân CHỈ áp dụng LTM <em>khi bên không nhằm mục đích sinh lợi chọn áp dụng</em>. Ở đây trường Y không chọn &rarr; Quan hệ được điều chỉnh chủ yếu bởi <strong>Bộ luật Dân sự 2015</strong> và pháp luật về <strong>Đấu thầu mua sắm công</strong>.</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 font-medium">
+                <i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline mr-1"></i> <strong>Bẫy đề thi:</strong> Nếu đề bài ghi "Một bên là trường đại học công lập và hợp đồng KHÔNG thỏa thuận luật áp dụng", tuyệt đối không được chọn "Bắt buộc áp dụng Luật Thương mại"!
+              </div>
+            </div>
+          </div>
+
+          <!-- Accordion 3: Tình huống Sinh viên M -->
+          <div class="border border-amber-300 dark:border-amber-700/70 rounded-xl bg-amber-50/20 dark:bg-amber-950/10 overflow-hidden">
+            <button onclick="toggleAccordion('acc-case1')" class="w-full p-4 text-left flex items-center justify-between hover:bg-amber-50/50 dark:hover:bg-amber-950/30 transition">
+              <span class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[10px] font-extrabold">TÌNH HUỐNG THẢO LUẬN CUỐI CHƯƠNG 1</span>
+                Sinh viên M bán online 150 đơn/tháng trên sàn TMĐT – "Bán cho vui có phải thương nhân?"
+              </span>
+              <i id="icon-acc-case1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-case1" class="hidden p-4 border-t border-amber-200 dark:border-amber-800/40 bg-white dark:bg-navy-800 text-xs space-y-2.5 leading-relaxed">
+              <div class="space-y-1.5 text-slate-700 dark:text-slate-200">
+                <p><strong>1. Hoạt động của M có phải hoạt động thương mại không?</strong><br>
+                &rarr; <strong>CÓ.</strong> Vì bán quần áo tự thiết kế để thu tiền chênh lệch là hoạt động nhằm mục đích sinh lợi (khoản 1 Điều 3 LTM 2005). Lập luận "chỉ bán online cho vui" không làm mất đi bản chất sinh lợi.</p>
+                
+                <p><strong>2. M có phải đăng ký kinh doanh không?</strong><br>
+                &rarr; <strong>CÓ.</strong> Quy mô 150 đơn hàng/tháng là hoạt động có tính thường xuyên, có địa điểm kinh doanh trên không gian mạng và tạo doanh thu liên tục, không thuộc danh mục cá nhân kinh doanh vặt, buôn chuyến nhỏ lẻ theo Nghị định 39/2007/NĐ-CP. M bắt buộc phải đăng ký thành lập <em>Hộ kinh doanh</em> hoặc <em>Doanh nghiệp</em>.</p>
+
+                <p><strong>3. Hậu quả pháp lý nếu không đăng ký kinh doanh:</strong><br>
+                &rarr; Bị xử phạt vi phạm hành chính về hành vi không đăng ký thành lập hộ kinh doanh theo Nghị định 122/2021/NĐ-CP (mức phạt tiền từ 5 – 10 triệu đồng).<br>
+                &rarr; Bị truy thu thuế và xử phạt vi phạm về thuế đối với khoản thu nhập phát sinh từ kinh doanh.<br>
+                &rarr; Theo quy định mới tại <strong>Luật Thương mại điện tử 2025 (hiệu lực 01/7/2026)</strong>: Sàn TMĐT bắt buộc phải xác thực thông tin định danh và mã số thuế người bán; nếu M không cung cấp hợp lệ, gian hàng sẽ bị sàn khóa vĩnh viễn.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLASHCARDS: 6 NGUYÊN TẮC CƠ BẢN TRONG HOẠT ĐỘNG THƯƠNG MẠI -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-cobalt"></i>
+              Thẻ Lật Ghi Nhớ (Flashcards): 6 Nguyên Tắc Cơ Bản Của LTM
+            </h3>
+            <span class="text-xs text-slate-400">Bấm thẻ để lật xem chi tiết</span>
+          </div>
+          
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <!-- Card 1 -->
+            <div onclick="this.classList.toggle('flipped')" class="flashcard h-28 cursor-pointer">
+              <div class="flashcard-inner relative w-full h-full rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flashcard-front absolute inset-0 bg-slate-50 dark:bg-navy-700 p-3 rounded-xl flex flex-col justify-between">
+                  <span class="text-[10px] font-bold text-cobalt uppercase">Nguyên tắc 1</span>
+                  <p class="text-xs font-bold text-navy-800 dark:text-white">Bình đẳng trước pháp luật</p>
+                  <span class="text-[9px] text-slate-400">Điều 10 LTM</span>
+                </div>
+                <div class="flashcard-back absolute inset-0 bg-cobalt text-white p-3 rounded-xl flex flex-col justify-center text-[11px] leading-tight text-center">
+                  Mọi thương nhân thuộc mọi thành phần kinh tế đều bình đẳng, không phân biệt đối xử.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div onclick="this.classList.toggle('flipped')" class="flashcard h-28 cursor-pointer">
+              <div class="flashcard-inner relative w-full h-full rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flashcard-front absolute inset-0 bg-slate-50 dark:bg-navy-700 p-3 rounded-xl flex flex-col justify-between">
+                  <span class="text-[10px] font-bold text-cobalt uppercase">Nguyên tắc 2</span>
+                  <p class="text-xs font-bold text-navy-800 dark:text-white">Tự do thỏa thuận</p>
+                  <span class="text-[9px] text-slate-400">Điều 11 LTM</span>
+                </div>
+                <div class="flashcard-back absolute inset-0 bg-cobalt text-white p-3 rounded-xl flex flex-col justify-center text-[11px] leading-tight text-center">
+                  Tự nguyện thỏa thuận miễn không trái luật, không trái đạo đức xã hội. Nhà nước tôn trọng.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div onclick="this.classList.toggle('flipped')" class="flashcard h-28 cursor-pointer">
+              <div class="flashcard-inner relative w-full h-full rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flashcard-front absolute inset-0 bg-slate-50 dark:bg-navy-700 p-3 rounded-xl flex flex-col justify-between">
+                  <span class="text-[10px] font-bold text-cobalt uppercase">Nguyên tắc 3</span>
+                  <p class="text-xs font-bold text-navy-800 dark:text-white">Áp dụng thói quen</p>
+                  <span class="text-[9px] text-slate-400">Điều 12 LTM</span>
+                </div>
+                <div class="flashcard-back absolute inset-0 bg-cobalt text-white p-3 rounded-xl flex flex-col justify-center text-[11px] leading-tight text-center">
+                  Thói quen đã được thiết lập giữa chính các bên trong quan hệ thương mại trước đó.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div onclick="this.classList.toggle('flipped')" class="flashcard h-28 cursor-pointer">
+              <div class="flashcard-inner relative w-full h-full rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flashcard-front absolute inset-0 bg-slate-50 dark:bg-navy-700 p-3 rounded-xl flex flex-col justify-between">
+                  <span class="text-[10px] font-bold text-cobalt uppercase">Nguyên tắc 4</span>
+                  <p class="text-xs font-bold text-navy-800 dark:text-white">Áp dụng tập quán</p>
+                  <span class="text-[9px] text-slate-400">Điều 13 LTM</span>
+                </div>
+                <div class="flashcard-back absolute inset-0 bg-cobalt text-white p-3 rounded-xl flex flex-col justify-center text-[11px] leading-tight text-center">
+                  Áp dụng khi luật và hợp đồng không quy định. Ví dụ: dẫn chiếu Incoterms.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div onclick="this.classList.toggle('flipped')" class="flashcard h-28 cursor-pointer">
+              <div class="flashcard-inner relative w-full h-full rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flashcard-front absolute inset-0 bg-slate-50 dark:bg-navy-700 p-3 rounded-xl flex flex-col justify-between">
+                  <span class="text-[10px] font-bold text-cobalt uppercase">Nguyên tắc 5</span>
+                  <p class="text-xs font-bold text-navy-800 dark:text-white">Bảo vệ người tiêu dùng</p>
+                  <span class="text-[9px] text-slate-400">Điều 14 LTM</span>
+                </div>
+                <div class="flashcard-back absolute inset-0 bg-cobalt text-white p-3 rounded-xl flex flex-col justify-center text-[11px] leading-tight text-center">
+                  Cung cấp thông tin trung thực, chính xác; chịu trách nhiệm về an toàn hàng hóa dịch vụ.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div onclick="this.classList.toggle('flipped')" class="flashcard h-28 cursor-pointer">
+              <div class="flashcard-inner relative w-full h-full rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flashcard-front absolute inset-0 bg-slate-50 dark:bg-navy-700 p-3 rounded-xl flex flex-col justify-between">
+                  <span class="text-[10px] font-bold text-cobalt uppercase">Nguyên tắc 6</span>
+                  <p class="text-xs font-bold text-navy-800 dark:text-white">Thông điệp dữ liệu</p>
+                  <span class="text-[9px] text-slate-400">Điều 15 LTM</span>
+                </div>
+                <div class="flashcard-back absolute inset-0 bg-cobalt text-white p-3 rounded-xl flex flex-col justify-center text-[11px] leading-tight text-center">
+                  Thừa nhận giá trị pháp lý tương đương văn bản của email, điện tín, chứng từ điện tử.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button next sprint -->
+        <div class="flex justify-end pt-2">
+          <button onclick="markSprintDone('sprint1'); switchTab('sprint2')" class="px-5 py-2.5 bg-cobalt hover:bg-cobalt-hover text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-md shadow-cobalt/20 transition">
+            Hoàn thành Chặng 1 &rarr; Sang Chặng 2 (Chủ Thể Kinh Doanh)
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- SPRINT 2 CONTAINER: CHỦ THỂ KINH DOANH -->
+      <section id="sprint2-content" class="sprint-section hidden space-y-6">
+        
+        <!-- Sprint 2 Header Banner -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded-lg bg-indigo-600 text-white">Chặng 2 • 50 Phút</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Chuẩn đầu ra: CLO2</span>
+          </div>
+          <h2 class="text-xl font-extrabold text-navy-800 dark:text-white">Chương 2: Pháp Luật Về Chủ Thể Kinh Doanh</h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+            Phân biệt sâu 5 loại hình chủ thể kinh doanh, Hợp tác xã và Nhóm công ty; làm chủ tỷ lệ biểu quyết, quy tắc chuyển nhượng vốn và các điểm sửa đổi bổ sung mới nhất năm 2025–2026.
+          </p>
+        </div>
+
+        <!-- HIGHLIGHT ĐIỂM MỚI 2025 BANNER -->
+        <div class="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 border border-amber-300 dark:border-amber-700/60 flex items-start gap-3 shadow-sm">
+          <div class="p-2 rounded-xl bg-amber-500 text-white shrink-0 shadow">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div class="space-y-1.5 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300 text-[11px] bg-amber-200 dark:bg-amber-900/60 px-2 py-0.5 rounded">CẬP NHẬT 2025 – 2026</span>
+              <span class="font-semibold text-slate-600 dark:text-slate-300">Luật số 76/2025/QH15 & Nghị định 168/2025/NĐ-CP</span>
+            </div>
+            <p class="text-slate-700 dark:text-slate-200 leading-relaxed">
+              <strong>1. Chủ sở hữu hưởng lợi:</strong> Bắt buộc thu thập, lưu giữ, kê khai cá nhân sở hữu thực tế trực tiếp hoặc gián tiếp từ <strong>25% vốn điều lệ trở lên</strong> hoặc có quyền chi phối doanh nghiệp (trừ công ty niêm yết).<br>
+              <strong>2. Quyền góp vốn của CB, CC, VC:</strong> Cán bộ, công chức, viên chức ĐƯỢC phép góp vốn, tham gia điều hành doanh nghiệp khi thực hiện pháp luật về khoa học công nghệ, đổi mới sáng tạo và chuyển đổi số.
+            </p>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE COMPARISON MATRIX (5 LOẠI HÌNH + HTX + NHÓM CÔNG TY) -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <i data-lucide="table" class="w-4 h-4 text-cobalt"></i>
+                Ma Trận So Sánh Tương Tác Các Loại Hình Chủ Thể Kinh Doanh
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Bấm nút lọc để làm nổi bật tiêu chí cốt lõi thường gặp trong đề thi</p>
+            </div>
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              <button onclick="filterMatrix('all')" class="matrix-filter-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-cobalt text-white">Tất cả</button>
+              <button onclick="filterMatrix('liability')" class="matrix-filter-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-navy-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200">Trách nhiệm</button>
+              <button onclick="filterMatrix('shares')" class="matrix-filter-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-navy-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200">Chứng khoán</button>
+              <button onclick="filterMatrix('persona')" class="matrix-filter-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-navy-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200">Pháp nhân</button>
+            </div>
+          </div>
+
+          <!-- Responsive Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-700/60 text-slate-700 dark:text-slate-200 font-bold">
+                  <th class="p-3">Loại hình</th>
+                  <th class="p-3">Chủ sở hữu / Thành viên</th>
+                  <th class="p-3 matrix-col-liability">Trách nhiệm tài sản</th>
+                  <th class="p-3 matrix-col-persona">Tư cách pháp nhân</th>
+                  <th class="p-3 matrix-col-shares">Khả năng phát hành CK</th>
+                  <th class="p-3">Căn cứ pháp lý</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">Hộ kinh doanh</td>
+                  <td class="p-3">01 cá nhân hoặc thành viên hộ gia đình (VN)</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-red-600 dark:text-red-400">VÔ HẠN (toàn bộ tài sản)</td>
+                  <td class="p-3 matrix-col-persona text-red-500 font-semibold">KHÔNG</td>
+                  <td class="p-3 matrix-col-shares text-red-500 font-semibold">KHÔNG</td>
+                  <td class="p-3 text-[11px] text-slate-400">NĐ 168/2025/NĐ-CP (ĐKKD cấp xã)</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">DNTN</td>
+                  <td class="p-3">01 cá nhân duy nhất làm chủ</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-red-600 dark:text-red-400">VÔ HẠN (toàn bộ tài sản)</td>
+                  <td class="p-3 matrix-col-persona text-red-500 font-semibold">KHÔNG</td>
+                  <td class="p-3 matrix-col-shares text-red-500 font-semibold">KHÔNG</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 188 - 193 LDN 2020</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">Công ty Hợp danh</td>
+                  <td class="p-3">&ge; 02 TV hợp danh (cá nhân) + có thể có TV góp vốn</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-red-600 dark:text-red-400">TVHD: VÔ HẠN & LIÊN ĐỚI; TVGV: Hữu hạn</td>
+                  <td class="p-3 matrix-col-persona text-emerald-600 font-bold">CÓ</td>
+                  <td class="p-3 matrix-col-shares text-red-500 font-semibold">KHÔNG</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 177 - 187 LDN 2020</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">TNHH 1 Thành viên</td>
+                  <td class="p-3">01 tổ chức hoặc 01 cá nhân</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-emerald-600 dark:text-emerald-400">HỮU HẠN (phạm vi vốn điều lệ)</td>
+                  <td class="p-3 matrix-col-persona text-emerald-600 font-bold">CÓ</td>
+                  <td class="p-3 matrix-col-shares text-cobalt font-semibold">Trái phiếu (không cổ phần)</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 74 - 87 LDN 2020</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">TNHH 2TV trở lên</td>
+                  <td class="p-3">02 – 50 thành viên (tổ chức / cá nhân)</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-emerald-600 dark:text-emerald-400">HỮU HẠN (vốn cam kết góp)</td>
+                  <td class="p-3 matrix-col-persona text-emerald-600 font-bold">CÓ</td>
+                  <td class="p-3 matrix-col-shares text-cobalt font-semibold">Trái phiếu (không cổ phần)</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 46 - 54 LDN 2020</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40 bg-blue-50/30 dark:bg-navy-700/20">
+                  <td class="p-3 font-bold text-cobalt dark:text-blue-400">Công ty Cổ phần (CTCP)</td>
+                  <td class="p-3">&ge; 03 cổ đông (không giới hạn tối đa)</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-emerald-600 dark:text-emerald-400">HỮU HẠN (số vốn đã góp)</td>
+                  <td class="p-3 matrix-col-persona text-emerald-600 font-bold">CÓ</td>
+                  <td class="p-3 matrix-col-shares font-extrabold text-emerald-600">Cổ phần + Trái phiếu + CK khác</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 111 - 150 LDN 2020</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-slate-800 dark:text-slate-200">Hợp tác xã (HTX)</td>
+                  <td class="p-3">&ge; 05 thành viên chính thức; quản lý dân chủ (1 người 1 phiếu)</td>
+                  <td class="p-3 matrix-col-liability font-semibold text-emerald-600 dark:text-emerald-400">HỮU HẠN (trong vốn góp)</td>
+                  <td class="p-3 matrix-col-persona text-emerald-600 font-bold">CÓ</td>
+                  <td class="p-3 matrix-col-shares text-slate-400">Theo Luật HTX</td>
+                  <td class="p-3 text-[11px] text-slate-400">Luật HTX 2023 (NĐ 92/2024)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Chú thích Nhóm công ty & Cấm sở hữu chéo -->
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200/80 dark:border-slate-700 text-xs space-y-1">
+            <div class="font-bold text-navy-800 dark:text-white flex items-center gap-1.5">
+              <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
+              Quy tắc cốt lõi về Nhóm công ty (Mẹ – Con) & Tập đoàn:
+            </div>
+            <p class="text-slate-600 dark:text-slate-300">
+              &bull; <strong>Tập đoàn kinh tế, Tổng công ty:</strong> KHÔNG phải là một loại hình doanh nghiệp, KHÔNG có tư cách pháp nhân.<br>
+              &bull; <strong>Cấm sở hữu chéo (Điều 195 LDN):</strong> Công ty con KHÔNG được góp vốn, mua cổ phần của công ty mẹ; các công ty con của cùng một công ty mẹ không được cùng nhau góp vốn để sở hữu chéo lẫn nhau.
+            </p>
+          </div>
+        </div>
+
+        <!-- SIMULATOR: TỶ LỆ BIỂU QUYẾT & CHUYỂN NHƯỢNG VỐN -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-cobalt"></i>
+              Bộ Mô Phỏng Thử Nghiệm Tỷ Lệ Biểu Quyết Thông Qua Nghị Quyết
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Kéo thanh trượt hoặc chọn tỷ lệ dự họp để kiểm tra nghị quyết có được thông qua hay không</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Box 1: TNHH 2TV+ Simulator -->
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-xs text-navy-800 dark:text-white uppercase tracking-wide">Công ty TNHH 2TV+</span>
+                <span class="text-[10px] text-slate-400">Điều 59 LDN 2020</span>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-500">Tỷ lệ vốn tán thành / dự họp:</span>
+                  <span id="tnhhValLabel" class="font-bold text-cobalt">70%</span>
+                </div>
+                <input type="range" id="tnhhRange" min="0" max="100" value="70" oninput="simVoteTNHH()" class="w-full accent-cobalt cursor-pointer">
+              </div>
+              <div class="space-y-1.5 text-xs pt-1">
+                <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-700">
+                  <span>1. Vấn đề thông thường (&ge; 65%):</span>
+                  <span id="tnhhRes1" class="font-bold text-emerald-600">THÔNG QUA</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-700">
+                  <span>2. Vấn đề quan trọng (&ge; 75%):</span>
+                  <span id="tnhhRes2" class="font-bold text-red-500">KHÔNG ĐẠT</span>
+                </div>
+                <p class="text-[10px] text-slate-400 italic">Quan trọng gồm: bán TS &ge; 50% tổng TS, sửa Điều lệ, tổ chức lại, giải thể.</p>
+              </div>
+            </div>
+
+            <!-- Box 2: CTCP Simulator -->
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-xs text-navy-800 dark:text-white uppercase tracking-wide">Công ty Cổ phần (ĐHĐCĐ)</span>
+                <span class="text-[10px] text-slate-400">Điều 148 LDN 2020</span>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-500">Tỷ lệ phiếu tán thành / dự họp:</span>
+                  <span id="ctcpValLabel" class="font-bold text-cobalt">60%</span>
+                </div>
+                <input type="range" id="ctcpRange" min="0" max="100" value="60" oninput="simVoteCTCP()" class="w-full accent-cobalt cursor-pointer">
+              </div>
+              <div class="space-y-1.5 text-xs pt-1">
+                <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-700">
+                  <span>1. Vấn đề thông thường (> 50%):</span>
+                  <span id="ctcpRes1" class="font-bold text-emerald-600">THÔNG QUA</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-700">
+                  <span>2. Vấn đề quan trọng (&ge; 65%):</span>
+                  <span id="ctcpRes2" class="font-bold text-red-500">KHÔNG ĐẠT</span>
+                </div>
+                <p class="text-[10px] text-slate-400 italic">Quan trọng gồm: bán/đầu tư TS &ge; 35% tổng TS, đổi ngành nghề, sửa Điều lệ, tổ chức lại.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMPARISON: QUY TẮC CHUYỂN NHƯỢNG VỐN (TNHH 30 NGÀY VS CTCP 3 NĂM) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            <div class="p-3.5 rounded-xl border border-blue-200 dark:border-slate-700 bg-blue-50/40 dark:bg-navy-900/30 text-xs space-y-1">
+              <span class="font-bold text-cobalt dark:text-blue-300 block">Quy tắc Chuyển nhượng vốn TNHH (Tính "Đóng")</span>
+              <p class="text-slate-600 dark:text-slate-300">
+                1. Bắt buộc chào bán trước cho các thành viên còn lại theo tỷ lệ vốn góp.<br>
+                2. Chờ <strong>30 ngày</strong>; nếu thành viên không mua hết mới được chuyển nhượng cho người ngoài với cùng điều kiện chào bán.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50/40 dark:bg-navy-900/30 text-xs space-y-1">
+              <span class="font-bold text-amber-800 dark:text-amber-400 block">Quy tắc Cổ đông sáng lập CTCP (Hạn chế 3 năm)</span>
+              <p class="text-slate-600 dark:text-slate-300">
+                Trong thời hạn <strong>03 năm</strong> kể từ ngày cấp GCN ĐKDN: Cổ phần phổ thông của CĐSL chỉ được bán cho người ngoài nếu được <strong>ĐHĐCĐ chấp thuận</strong> (CĐSL chuyển nhượng KHÔNG được biểu quyết).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP-BY-STEP CASE SOLUTIONS: VÍ DỤ 3, 4, 5, 6, 7 & CTCP NAM PHONG -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            Lời Giải Chi Tiết Các Tình Huống Thực Tế Chương 2
+          </h3>
+
+          <!-- Accordion: Ví dụ 3 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd3')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold">VÍ DỤ 3</span>
+                Ông Minh chủ DNTN nợ ngân hàng 3 tỷ, tài sản DNTN còn 1 tỷ, nhà riêng 4 tỷ
+              </span>
+              <i id="icon-acc-vd3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd3" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 188 Luật Doanh nghiệp 2020.</p>
+              <p>1. <strong>Ngân hàng có quyền yêu cầu ông Minh dùng căn nhà riêng để trả nợ không?</strong><br>
+              &rarr; <strong>CÓ.</strong> Vì chủ DNTN chịu trách nhiệm vô hạn bằng toàn bộ tài sản của mình. Tài sản đưa vào kinh doanh của DNTN và tài sản riêng của chủ không tách bạch về mặt pháp lý.</p>
+              <p>2. <strong>Ông Minh có được góp vốn thành lập công ty TNHH không?</strong><br>
+              &rarr; Ông Minh với <strong>tư cách cá nhân</strong> hoàn toàn có quyền góp vốn vào công ty TNHH (khoản 3 Điều 17). Nhưng <strong>DNTN Minh Phát</strong> thì KHÔNG được góp vốn thành lập doanh nghiệp khác (khoản 4 Điều 188).</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 4 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd4')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold">VÍ DỤ 4</span>
+                Cty Hợp danh Kiểm toán An Bình nợ 5 tỷ (A, B là TVHD; C là TV góp vốn 500tr)
+              </span>
+              <i id="icon-acc-vd4" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd4" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 177, 181, 187 Luật Doanh nghiệp 2020.</p>
+              <p>1. <strong>Khoản nợ 3 tỷ còn thiếu do ai chịu trách nhiệm?</strong><br>
+              &rarr; Dùng tài sản cty (2 tỷ) trả nợ trước. Khoản nợ 3 tỷ còn lại thuộc trách nhiệm của <strong>A và B (các TVHD)</strong> bằng toàn bộ tài sản riêng của họ. Thành viên góp vốn C chỉ chịu trách nhiệm trong phạm vi 500 triệu đồng đã góp, không phải dùng tài sản riêng trả nợ.</p>
+              <p>2. <strong>Chủ nợ có thể yêu cầu riêng cá nhân A trả toàn bộ 3 tỷ không?</strong><br>
+              &rarr; <strong>CÓ.</strong> Do tính chất "liên đới" của thành viên hợp danh. Sau khi A trả xong cho chủ nợ, A có quyền yêu cầu B hoàn trả phần của B theo thỏa thuận nội bộ.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 5 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd5')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold">VÍ DỤ 5</span>
+                Cty TNHH Hoa Sen: X (50%), Y (30%), Z (20%) – Chuyển nhượng vốn & Sửa Điều lệ
+              </span>
+              <i id="icon-acc-vd5" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd5" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 52, Điều 59 Luật Doanh nghiệp 2020.</p>
+              <p>1. <strong>X có được bán ngay phần vốn cho Q (người ngoài) không?</strong><br>
+              &rarr; <strong>KHÔNG.</strong> X phải chào bán trước cho Y và Z theo tỷ lệ phần vốn góp tương ứng (30 : 20, tức tỷ lệ 3:2). Sau 30 ngày nếu Y, Z không mua hoặc không mua hết thì X mới được bán phần còn lại cho Q.</p>
+              <p>2. <strong>Nghị quyết sửa đổi Điều lệ có được thông qua không?</strong><br>
+              &rarr; <strong>KHÔNG ĐƯỢC THÔNG QUA.</strong> Sửa đổi Điều lệ công ty TNHH là vấn đề quan trọng cần từ <strong>75% tổng số vốn góp của thành viên dự họp</strong> tán thành. X (50%) + Z (20%) = 70% &lt; 75%.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 6 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd6')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold">VÍ DỤ 6</span>
+                CTCP Sao Mai: CĐSL D muốn bán cổ phần cho người ngoài G sau 1,5 năm
+              </span>
+              <i id="icon-acc-vd6" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd6" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Khoản 3 Điều 120 Luật Doanh nghiệp 2020.</p>
+              <p>1. <strong>D có được tự do bán cổ phần cho G không?</strong><br>
+              &rarr; <strong>KHÔNG.</strong> Vì công ty thành lập tháng 03/2025, đến tháng 10/2026 vẫn đang trong thời hạn 03 năm kể từ ngày được cấp GCN ĐKDN. Cổ phần phổ thông của CĐSL chỉ được chuyển nhượng cho người ngoài nếu được ĐHĐCĐ chấp thuận.</p>
+              <p>2. <strong>Khi ĐHĐCĐ biểu quyết chấp thuận, D có được biểu quyết không?</strong><br>
+              &rarr; <strong>KHÔNG.</strong> Cổ đông sáng lập có dự định chuyển nhượng cổ phần KHÔNG có quyền biểu quyết về việc chuyển nhượng này.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 7 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd7')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold">VÍ DỤ 7</span>
+                3 sinh viên mở chuỗi cà phê (vốn 600 triệu), muốn hạn chế rủi ro và gọi vốn sau 2 năm
+              </span>
+              <i id="icon-acc-vd7" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd7" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Phân tích lựa chọn:</strong></p>
+              <ul class="list-disc pl-4 space-y-1">
+                <li>Loại bỏ Hộ kinh doanh & DNTN vì chịu trách nhiệm vô hạn, không đạt tiêu chí bảo vệ tài sản cá nhân.</li>
+                <li>Công ty TNHH 2TV+ tuy bảo vệ trách nhiệm hữu hạn và quản trị tinh gọn nhưng khả năng gọi vốn bị hạn chế (chỉ tối đa 50 thành viên, không được phát hành cổ phần).</li>
+                <li><strong>Khuyên chọn: CÔNG TY CỔ PHẦN (CTCP)</strong> vì: vừa đủ số lượng tối thiểu (&ge; 3 cổ đông), chế độ trách nhiệm hữu hạn, và đặc biệt là phương tiện gọi vốn tối ưu bằng cách chào bán cổ phần cho nhà đầu tư mới sau 2 năm.</li>
+                <li><em>Nếu bỏ kế hoạch gọi vốn:</em> Công ty TNHH 2TV+ là lựa chọn gọn nhẹ, ít thủ tục công bố thông tin hơn.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Accordion: Tình huống CTCP Nam Phong -->
+          <div class="border border-amber-300 dark:border-amber-700/70 rounded-xl bg-amber-50/20 dark:bg-amber-950/10 overflow-hidden">
+            <button onclick="toggleAccordion('acc-case2')" class="w-full p-4 text-left flex items-center justify-between hover:bg-amber-50/50 dark:hover:bg-amber-950/30 transition">
+              <span class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[10px] font-extrabold">TÌNH HUỐNG THẢO LUẬN CUỐI CHƯƠNG 2</span>
+                CTCP Nam Phong: Cổ đông H (70%) biểu quyết bán xưởng 40% TS – Cổ đông K (10%) đòi cty mua lại CP
+              </span>
+              <i id="icon-acc-case2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-case2" class="hidden p-4 border-t border-amber-200 dark:border-amber-800/40 bg-white dark:bg-navy-800 text-xs space-y-2.5 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 148, Điều 132 Luật Doanh nghiệp 2020.</p>
+              <div class="space-y-1.5 text-slate-700 dark:text-slate-200">
+                <p><strong>1. Nghị quyết bán nhà xưởng có được thông qua không?</strong><br>
+                &rarr; <strong>CÓ, NGHỊ QUYẾT ĐƯỢC THÔNG QUA HỢP LỆ.</strong><br>
+                Theo điểm h khoản 1 Điều 148 LDN 2020: Bán tài sản có giá trị từ <strong>35% tổng giá trị tài sản</strong> trở lên ghi trong BCTC gần nhất là vấn đề quan trọng cần từ <strong>65% tổng số phiếu biểu quyết</strong> của các cổ đông dự họp tán thành. Tại đây tất cả cổ đông dự họp, riêng cổ đông H sở hữu 70% cổ phần &gt; 65% nên nghị quyết đủ điều kiện thông qua hợp pháp.</p>
+                
+                <p><strong>2. Cổ đông K (10%) có quyền yêu cầu công ty mua lại cổ phần của mình không?</strong><br>
+                &rarr; <strong>KHÔNG CÓ QUYỀN (theo luật định).</strong><br>
+                Theo Điều 132 LDN 2020: Cổ đông chỉ có quyền yêu cầu công ty mua lại cổ phần nếu biểu quyết phản đối nghị quyết về: (i) <em>Tổ chức lại công ty</em> (chia, tách, hợp nhất, sáp nhập, chuyển đổi); hoặc (ii) <em>Thay đổi quyền, nghĩa vụ của cổ đông quy định tại Điều lệ</em>. Việc bán nhà xưởng dù là tài sản lớn (40%) nhưng không thuộc hai trường hợp theo Điều 132. Trừ trường hợp Điều lệ công ty Nam Phong có thỏa thuận mở rộng quyền này.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button next sprint -->
+        <div class="flex justify-between pt-2">
+          <button onclick="switchTab('sprint1')" class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-xs">
+            &larr; Về Chặng 1
+          </button>
+          <button onclick="markSprintDone('sprint2'); switchTab('sprint3')" class="px-5 py-2.5 bg-cobalt hover:bg-cobalt-hover text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-md shadow-cobalt/20 transition">
+            Hoàn thành Chặng 2 &rarr; Sang Chặng 3 (Hợp Đồng & Hoạt Động TM)
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- SPRINT 3 CONTAINER: HỢP ĐỒNG & HOẠT ĐỘNG THƯƠNG MẠI -->
+      <section id="sprint3-content" class="sprint-section hidden space-y-6">
+        
+        <!-- Sprint 3 Header Banner -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded-lg bg-cobalt text-white">Chặng 3 • 50 Phút</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Chuẩn đầu ra: CLO3</span>
+          </div>
+          <h2 class="text-xl font-extrabold text-navy-800 dark:text-white">Chương 3: Pháp Luật Về Hợp Đồng & Hoạt Động Thương Mại</h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+            Quy trình giao kết hợp đồng, 4 mốc chuyển rủi ro, phân biệt 4 trung gian thương mại, máy tính chế tài phạt trần 8% kết hợp bồi thường và điểm mới Luật TMĐT 2025.
+          </p>
+        </div>
+
+        <!-- TIMELINE GIAO KẾT HỢP ĐỒNG & CÁC HỢP ĐỒNG BẮT BUỘC VĂN BẢN -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="git-commit" class="w-4 h-4 text-cobalt"></i>
+              Sơ Đồ Timeline Giao Kết Hợp Đồng & Quy Tắc Hiệu Lực
+            </h3>
+            <span class="text-[11px] font-bold text-cobalt bg-blue-50 dark:bg-navy-700 px-2 py-0.5 rounded">Điều 386 – 400 BLDS</span>
+          </div>
+
+          <!-- Horizontal Timeline -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 relative">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200 dark:border-slate-700 relative">
+              <span class="w-5 h-5 rounded-full bg-cobalt text-white text-[10px] font-bold flex items-center justify-center mb-1.5">1</span>
+              <h4 class="text-xs font-bold text-navy-800 dark:text-white">Đề nghị giao kết</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Thể hiện rõ ý định giao kết và chịu sự ràng buộc gửi cho bên được đề nghị (kèm thời hạn trả lời).</p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200 dark:border-slate-700 relative">
+              <span class="w-5 h-5 rounded-full bg-cobalt text-white text-[10px] font-bold flex items-center justify-center mb-1.5">2</span>
+              <h4 class="text-xs font-bold text-navy-800 dark:text-white">Trả lời chấp nhận</h4>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Chấp nhận toàn bộ nội dung đề nghị trong thời hạn trả lời.</p>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 relative">
+              <span class="w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center mb-1.5">!</span>
+              <h4 class="text-xs font-bold text-amber-800 dark:text-amber-300">Sửa đổi = Đề nghị mới</h4>
+              <p class="text-[11px] text-amber-700 dark:text-amber-400 mt-1">Chấp nhận có kèm điều kiện hoặc sửa đổi coi như từ chối và tạo đề nghị mới (Điều 392).</p>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 relative">
+              <span class="w-5 h-5 rounded-full bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center mb-1.5">&check;</span>
+              <h4 class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Hợp đồng giao kết</h4>
+              <p class="text-[11px] text-emerald-700 dark:text-emerald-400 mt-1">Thời điểm bên đề nghị nhận được chấp nhận. <em>Im lặng &ne; Chấp nhận</em> (trừ khi có thỏa thuận/thói quen).</p>
+            </div>
+          </div>
+
+          <!-- List of Mandatory Written Contracts -->
+          <div class="p-3.5 rounded-xl bg-red-50/50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/30 text-xs">
+            <span class="font-bold text-red-800 dark:text-red-300 flex items-center gap-1.5 mb-1.5">
+              <i data-lucide="alert-octagon" class="w-4 h-4 text-red-500"></i>
+              BẮT BUỘC THI: Danh sách 6 loại hợp đồng thương mại luật định BẮT BUỘC LẬP BẰNG VĂN BẢN:
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-slate-700 dark:text-slate-300">
+              <div class="p-2 rounded bg-white dark:bg-navy-800 border border-red-100 dark:border-red-900/40">1. Mua bán hàng hóa quốc tế (Điều 27)</div>
+              <div class="p-2 rounded bg-white dark:bg-navy-800 border border-red-100 dark:border-red-900/40">2. Dịch vụ khuyến mại (Điều 90)</div>
+              <div class="p-2 rounded bg-white dark:bg-navy-800 border border-red-100 dark:border-red-900/40">3. Dịch vụ quảng cáo thương mại (Điều 110)</div>
+              <div class="p-2 rounded bg-white dark:bg-navy-800 border border-red-100 dark:border-red-900/40">4. Đại diện cho thương nhân (Điều 142)</div>
+              <div class="p-2 rounded bg-white dark:bg-navy-800 border border-red-100 dark:border-red-900/40">5. Ủy thác mua bán hàng hóa (Điều 159)</div>
+              <div class="p-2 rounded bg-white dark:bg-navy-800 border border-red-100 dark:border-red-900/40">6. Đại lý thương mại (Điều 168)</div>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
+              * Ghi nhớ: Hợp đồng mua bán hàng hóa thông thường trong nước và Hợp đồng môi giới thương mại <strong>KHÔNG</strong> bắt buộc lập bằng văn bản (có thể bằng lời nói hoặc hành vi).
+            </p>
+          </div>
+        </div>
+
+        <!-- RISK TRANSFER FLOWCHART: 4 TRƯỜNG HỢP THEO ĐIỀU 57 - 61 LTM -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="truck" class="w-4 h-4 text-cobalt"></i>
+              Sơ Đồ Chuyển Rủi Ro Trong Mua Bán Hàng Hóa (Khi Không Có Thỏa Thuận)
+            </h3>
+            <span class="text-[11px] font-bold text-cobalt bg-blue-50 dark:bg-navy-700 px-2 py-0.5 rounded">Điều 57 – 61 LTM</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <!-- Case 1 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-1">
+              <div class="flex justify-between font-bold text-navy-800 dark:text-white">
+                <span>Trường hợp 1: Có địa điểm giao hàng nhất định</span>
+                <span class="text-cobalt">Điều 57</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-300">
+                Rủi ro chuyển sang bên mua khi <strong>hàng hóa đã được giao cho bên mua</strong> hoặc người được bên mua ủy quyền nhận hàng tại đúng địa điểm đó.
+              </p>
+            </div>
+
+            <!-- Case 2 -->
+            <div class="p-3.5 rounded-xl bg-blue-50/50 dark:bg-navy-700/60 border border-blue-200 dark:border-slate-700 space-y-1">
+              <div class="flex justify-between font-bold text-cobalt dark:text-blue-300">
+                <span>Trường hợp 2: Có vận chuyển, KHÔNG có địa điểm giao cụ thể</span>
+                <span class="text-cobalt">Điều 59 (Ví dụ 9)</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-300">
+                Rủi ro chuyển sang bên mua ngay khi hàng hóa được giao cho <strong>NGƯỜI VẬN CHUYỂN ĐẦU TIÊN</strong> (Bên mua vẫn phải thanh toán đủ dù xe gặp tai nạn trên đường).
+              </p>
+            </div>
+
+            <!-- Case 3 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-1">
+              <div class="flex justify-between font-bold text-navy-800 dark:text-white">
+                <span>Trường hợp 3: Người thứ ba nhận giữ (không phải người vận chuyển)</span>
+                <span class="text-cobalt">Điều 60</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-300">
+                Rủi ro chuyển khi bên mua nhận được <strong>chứng từ sở hữu hàng hóa</strong> hoặc người giữ xác nhận quyền chiếm giữ của bên mua.
+              </p>
+            </div>
+
+            <!-- Case 4 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-1">
+              <div class="flex justify-between font-bold text-navy-800 dark:text-white">
+                <span>Trường hợp 4: Hàng hóa đang trên đường vận chuyển</span>
+                <span class="text-cobalt">Điều 61</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-300">
+                Rủi ro chuyển sang bên mua kể từ thời điểm <strong>GIAO KẾT HỢP ĐỒNG</strong> mua bán.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BẢNG PHÂN BIỆT 4 HÌNH THỨC TRUNG GIAN THƯƠNG MẠI + LOGISTICS & XÚC TIẾN -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-cobalt"></i>
+              Phân Biệt 4 Hình Thức Trung Gian Thương Mại (Khắc Cốt Ghi Tâm)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Trọng tâm câu hỏi thi trắc nghiệm và tình huống phân loại trung gian</p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-700/60 font-bold text-slate-700 dark:text-slate-200">
+                  <th class="p-3">Hình thức trung gian</th>
+                  <th class="p-3">Tư cách nhân danh</th>
+                  <th class="p-3">Hình thức hợp đồng</th>
+                  <th class="p-3">Thù lao / Phí</th>
+                  <th class="p-3">Điều luật</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">1. Đại diện cho thương nhân</td>
+                  <td class="p-3 font-bold text-blue-600 dark:text-blue-400">Nhân danh BÊN GIAO ĐẠI DIỆN</td>
+                  <td class="p-3 font-bold text-red-500">Bắt buộc văn bản</td>
+                  <td class="p-3">Thù lao đại diện</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 141, 142</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">2. Môi giới thương mại</td>
+                  <td class="p-3 font-bold text-amber-600 dark:text-amber-400">KHÔNG nhân danh bên nào</td>
+                  <td class="p-3 font-bold text-emerald-600">KHÔNG bắt buộc văn bản</td>
+                  <td class="p-3">Thù lao môi giới</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 150, 155</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">3. Ủy thác mua bán hàng hóa</td>
+                  <td class="p-3 font-bold text-purple-600 dark:text-purple-400">Nhân danh CHÍNH MÌNH (theo từng việc)</td>
+                  <td class="p-3 font-bold text-red-500">Bắt buộc văn bản</td>
+                  <td class="p-3">Phí ủy thác</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 159, 166</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">4. Đại lý thương mại</td>
+                  <td class="p-3 font-bold text-purple-600 dark:text-purple-400">Nhân danh CHÍNH MÌNH (ổn định)</td>
+                  <td class="p-3 font-bold text-red-500">Bắt buộc văn bản</td>
+                  <td class="p-3">Thù lao đại lý / hoa hồng</td>
+                  <td class="p-3 text-[11px] text-slate-400">Điều 166, 168</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Logistics & XTTM mini cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-1">
+              <span class="font-bold text-navy-800 dark:text-white flex items-center gap-1.5">
+                <i data-lucide="package" class="w-3.5 h-3.5 text-cobalt"></i> Dịch vụ Logistics (Điều 233 – 240)
+              </span>
+              <p class="text-slate-600 dark:text-slate-300">
+                Thương nhân tổ chức thực hiện 1 hoặc nhiều công việc: nhận hàng, vận chuyển, lưu kho, thông quan, đóng gói, phân phối... để hưởng thù lao. Có quy định miễn trách riêng (Điều 237) và trần giới hạn trách nhiệm bồi thường (Điều 238).
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-1">
+              <span class="font-bold text-navy-800 dark:text-white flex items-center gap-1.5">
+                <i data-lucide="megaphone" class="w-3.5 h-3.5 text-amber-500"></i> Xúc tiến thương mại (Điều 88 – 140)
+              </span>
+              <p class="text-slate-600 dark:text-slate-300">
+                Gồm 4 hoạt động: <strong>Khuyến mại</strong> (tạo lợi ích trực tiếp cho KH); <strong>Quảng cáo TM</strong> (giới thiệu sản phẩm/dịch vụ); <strong>Trưng bày, giới thiệu</strong>; và <strong>Hội chợ, triển lãm thương mại</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE CALCULATOR: CHẾ TÀI PHẠT VI PHẠM & BỒI THƯỜNG THIỆT HẠI -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <i data-lucide="calculator" class="w-4 h-4 text-emeraldAccent"></i>
+                Máy Tính Chế Tài Thương Mại: Phạt Trần 8% & Bồi Thường Thiệt Hại
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Tự động kiểm tra trần 8% theo Điều 301 và tính tổng bồi thường theo Điều 307 LTM 2005</p>
+            </div>
+            <button onclick="loadCalcExample11()" class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 text-xs font-bold hover:bg-emerald-100 transition flex items-center gap-1.5">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Nạp Ví dụ 11 (Máy lạnh)
+            </button>
+          </div>
+
+          <!-- Calculator Inputs -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tổng giá trị hợp đồng (VNĐ):</label>
+              <input type="number" id="calcTotalVal" value="5000000000" oninput="calculatePenalty()" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-navy-700 text-navy-800 dark:text-white font-mono">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Giá trị phần vi phạm (VNĐ):</label>
+              <input type="number" id="calcBreachVal" value="1000000000" oninput="calculatePenalty()" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-navy-700 text-navy-800 dark:text-white font-mono">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Mức phạt thỏa thuận trong HĐ (%):</label>
+              <input type="number" id="calcAgreeRate" value="12" oninput="calculatePenalty()" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-navy-700 text-navy-800 dark:text-white font-mono">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Thiệt hại thực tế chứng minh (VNĐ):</label>
+              <input type="number" id="calcDamageVal" value="150000000" oninput="calculatePenalty()" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-navy-700 text-navy-800 dark:text-white font-mono">
+            </div>
+          </div>
+
+          <!-- Calculator Output Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200 dark:border-slate-700 text-xs">
+              <span class="text-slate-500 dark:text-slate-400 block mb-1">Mức phạt hợp pháp tối đa (8%):</span>
+              <span id="resPenaltyLegal" class="text-base font-extrabold text-navy-800 dark:text-white font-mono">80.000.000 đ</span>
+              <p id="resPenaltyWarn" class="text-[11px] text-amber-600 mt-1">Thỏa thuận 12% vượt trần &rarr; chỉ chấp nhận 8% phần vi phạm.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/50 border border-slate-200 dark:border-slate-700 text-xs">
+              <span class="text-slate-500 dark:text-slate-400 block mb-1">Tiền bồi thường thiệt hại:</span>
+              <span id="resDamageLegal" class="text-base font-extrabold text-navy-800 dark:text-white font-mono">150.000.000 đ</span>
+              <p class="text-[11px] text-emerald-600 mt-1">Được yêu cầu toàn bộ thiệt hại thực tế chứng minh.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 border border-emerald-300 dark:border-emerald-700 text-xs">
+              <span class="text-emerald-800 dark:text-emerald-300 font-bold block mb-1">TỔNG TIỀN BÊN BÁN PHẢI TRẢ:</span>
+              <span id="resTotalPayment" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">230.000.000 đ</span>
+              <p class="text-[11px] text-emerald-700 dark:text-emerald-300 mt-1">Có phạt trong HĐ &rarr; Áp dụng CẢ phạt + bồi thường (Điều 307).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- HIGHLIGHT: ĐIỂM MỚI LUẬT TMĐT 2025 (HIỆU LỰC 01/7/2026) -->
+        <div class="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-navy-800 dark:to-slate-800 border border-blue-200 dark:border-slate-700 text-xs space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-cobalt text-white font-extrabold text-[10px] uppercase">ĐIỂM MỚI HIỆU LỰC 01/7/2026</span>
+            <span class="font-bold text-navy-800 dark:text-white">Luật Thương mại điện tử 2025 (Luật số 122/2025/QH15)</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-slate-700 dark:text-slate-300">
+            <div class="p-2.5 rounded-lg bg-white dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700">
+              <strong>1. Xác thực người bán:</strong> Sàn TMĐT bắt buộc phải xác thực danh tính, CCCD/ĐKKD người bán trước khi cho mở gian hàng.
+            </div>
+            <div class="p-2.5 rounded-lg bg-white dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700">
+              <strong>2. Quản lý Livestream:</strong> Cá nhân livestream bán hàng phải định danh điện tử; chịu trách nhiệm trực tiếp về phát ngôn quảng cáo.
+            </div>
+            <div class="p-2.5 rounded-lg bg-white dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700">
+              <strong>3. Trách nhiệm của Sàn:</strong> Tiếp nhận xử lý khiếu nại, cung cấp chứng cứ khi xảy ra lừa đảo, hàng giả, hàng nhái.
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP-BY-STEP CASE SOLUTIONS: VÍ DỤ 8, 9, 10, 11, 12 & TÌNH HUỐNG CÀ PHÊ -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            Lời Giải Chi Tiết Các Tình Huống Chương 3
+          </h3>
+
+          <!-- Accordion: Ví dụ 8 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd8')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt text-[10px] font-extrabold">VÍ DỤ 8</span>
+                Sữa Ba Vì email bán sữa cho Siêu thị B (B đồng ý nhưng đòi giảm 5%, Ba Vì im lặng)
+              </span>
+              <i id="icon-acc-vd8" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd8" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 392, 393 BLDS 2015; Điều 15 LTM 2005; Luật GDĐT 2023.</p>
+              <p>1. <strong>Hợp đồng đã được giao kết chưa?</strong><br>
+              &rarr; <strong>CHƯA ĐƯỢC GIAO KẾT.</strong> Việc B phản hồi "giảm giá 5%" là sửa đổi nội dung chủ yếu của đề nghị &rarr; theo Điều 392 BLDS, đây không phải chấp nhận mà là một <em>đề nghị mới</em> từ B gửi Ba Vì. Ba Vì im lặng thì theo khoản 2 Điều 393 BLDS, im lặng không được coi là chấp nhận. Do đó B không có quyền yêu cầu giao hàng.</p>
+              <p>2. <strong>Email có phải hình thức hợp pháp không?</strong><br>
+              &rarr; <strong>CÓ.</strong> Email là thông điệp dữ liệu, có giá trị pháp lý tương đương văn bản theo Điều 15 LTM 2005.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 9 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd9')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt text-[10px] font-extrabold">VÍ DỤ 9</span>
+                Thép Việt (Hải Phòng) bán 100 tấn thép cho Cty XD Hòa Bình (Hà Nội) – Xe tai nạn hỏng 20 tấn
+              </span>
+              <i id="icon-acc-vd9" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd9" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 59 Luật Thương mại 2005.</p>
+              <p>1. <strong>Bên nào chịu rủi ro đối với 20 tấn thép?</strong><br>
+              &rarr; Hợp đồng có vận chuyển nhưng không quy định địa điểm giao hàng nhất định và không thỏa thuận thời điểm chuyển rủi ro. Theo Điều 59 LTM, rủi ro chuyển sang bên mua khi hàng được <strong>giao cho người vận chuyển đầu tiên</strong>. Do đó, <strong>Công ty XD Hòa Bình (bên mua) phải chịu rủi ro</strong> và vẫn phải thanh toán đủ tiền 100 tấn thép cho Thép Việt.</p>
+              <p>2. <strong>Bên chịu rủi ro bù đắp thiệt hại bằng cách nào?</strong><br>
+              &rarr; Hòa Bình có thể khởi kiện yêu cầu bên công ty vận tải bồi thường theo hợp đồng vận chuyển hàng hóa, hoặc yêu cầu công ty bảo hiểm chi trả nếu lô hàng đã được mua bảo hiểm.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 10 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd10')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt text-[10px] font-extrabold">VÍ DỤ 10</span>
+                Mỹ phẩm Lan Chi ký với shop Ngọc Mai (Ngọc Mai nhân danh mình bán giá do Lan Chi ấn định)
+              </span>
+              <i id="icon-acc-vd10" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd10" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 166, 168, 170, 171 Luật Thương mại 2005.</p>
+              <p>1. <strong>Đây là quan hệ trung gian nào?</strong><br>
+              &rarr; <strong>ĐẠI LÝ THƯƠNG MẠI</strong> (Điều 166) – Cụ thể là hình thức <em>Đại lý hoa hồng</em> (Điều 171) vì bên đại lý bán đúng giá do bên giao đại lý ấn định và hưởng phần trăm thù lao theo doanh số.</p>
+              <p>2. <strong>Ai là chủ sở hữu số mỹ phẩm chưa bán? Hợp đồng có phải lập văn bản không?</strong><br>
+              &rarr; Lan Chi (bên giao đại lý) vẫn là chủ sở hữu số hàng hóa đó cho đến khi khách mua (Điều 170). Hợp đồng đại lý bắt buộc phải lập bằng văn bản hoặc hình thức tương đương (Điều 168).</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 12 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd12')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt text-[10px] font-extrabold">VÍ DỤ 12</span>
+                Chị Hoa mua nồi chiên không dầu qua livestream trên sàn S (Người bán T giao hàng giả, chặn tin nhắn)
+              </span>
+              <i id="icon-acc-vd12" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd12" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Luật TMĐT 2025 (hiệu lực 01/7/2026); Luật BVQLNTD 2023.</p>
+              <p>1. <strong>Chị Hoa yêu cầu ai chịu trách nhiệm?</strong><br>
+              &rarr; Người bán T là bên trong hợp đồng mua bán điện tử, vi phạm nghiêm trọng về chất lượng hàng hóa &rarr; T phải đổi trả, hoàn tiền và bồi thường thiệt hại.</p>
+              <p>2. <strong>Sàn S có trách nhiệm gì theo luật mới?</strong><br>
+              &rarr; Vì giao dịch xảy ra sau 01/7/2026: Sàn S có trách nhiệm đã phải xác thực danh tính người bán T trước đó, cung cấp đầy đủ thông tin định danh của T cho người tiêu dùng và cơ quan chức năng, tiếp nhận và giải quyết khiếu nại của chị Hoa; nếu S không thực hiện đúng quy trình xác thực người bán thì phải liên đới chịu trách nhiệm bồi thường.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Tình huống Cà phê Việt Nam & Singapore -->
+          <div class="border border-amber-300 dark:border-amber-700/70 rounded-xl bg-amber-50/20 dark:bg-amber-950/10 overflow-hidden">
+            <button onclick="toggleAccordion('acc-case3')" class="w-full p-4 text-left flex items-center justify-between hover:bg-amber-50/50 dark:hover:bg-amber-950/30 transition">
+              <span class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[10px] font-extrabold">TÌNH HUỐNG THẢO LUẬN CUỐI CHƯƠNG 3</span>
+                Cty A (VN) bán 50 tấn cà phê cho Cty B (Singapore) qua email – Giá tăng chỉ giao 30 tấn
+              </span>
+              <i id="icon-acc-case3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-case3" class="hidden p-4 border-t border-amber-200 dark:border-amber-800/40 bg-white dark:bg-navy-800 text-xs space-y-2.5 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Công ước Viên 1980 (CISG); Điều 15, 27, 294, 301, 307 Luật Thương mại 2005.</p>
+              <div class="space-y-1.5 text-slate-700 dark:text-slate-200">
+                <p><strong>1. Hợp đồng ký qua email có hợp lệ không? Luật nào áp dụng?</strong><br>
+                &rarr; Hợp đồng qua email <strong>hoàn toàn hợp lệ</strong> vì thông điệp dữ liệu có giá trị tương đương văn bản (Điều 15 LTM 2005, Luật GDĐT 2023).<br>
+                &rarr; <strong>Nguồn luật áp dụng:</strong> Cả Việt Nam và Singapore đều là thành viên của <strong>Công ước Viên 1980 (CISG)</strong>. Do các bên không có thỏa thuận loại trừ, CISG sẽ tự động được ưu tiên áp dụng để điều chỉnh quyền và nghĩa vụ trong hợp đồng mua bán quốc tế này. Các vấn đề CISG không điều chỉnh sẽ áp dụng LTM 2005 hoặc luật do quy tắc tư pháp quốc tế dẫn chiếu.</p>
+                
+                <p><strong>2. Giá thị trường tăng mạnh có phải là sự kiện bất khả kháng không?</strong><br>
+                &rarr; <strong>KHÔNG PHẢI BẤT KHẢ KHÁNG.</strong> Biến động giá cả hàng hóa trên thị trường là rủi ro thương mại thông thường trong kinh doanh mà thương nhân buộc phải lường trước. Việc giá tăng không đáp ứng yếu tố "khách quan không thể lường trước được và không thể khắc phục được" theo khoản 1 Điều 156 BLDS và CISG. Do đó Công ty A không được miễn trách nhiệm.</p>
+
+                <p><strong>3. Công ty B được áp dụng những chế tài nào?</strong><br>
+                &rarr; <strong>Phạt vi phạm:</strong> 5% giá trị phần nghĩa vụ bị vi phạm (tương ứng với 20 tấn cà phê chưa giao). Mức phạt 5% này hợp pháp vì nằm trong trần 8% theo Điều 301 LTM.<br>
+                &rarr; <strong>Bồi thường thiệt hại:</strong> B được yêu cầu A bồi thường toàn bộ 400 triệu đồng chênh lệch giá mua bù từ bên thứ ba (đây là tổn thất thực tế, trực tiếp theo Điều 302 LTM và Điều 74 CISG).<br>
+                &rarr; <strong>Quan hệ chế tài:</strong> Vì hợp đồng có thỏa thuận phạt vi phạm, bên B có quyền áp dụng <strong>CẢ PHẠT VI PHẠM LẪN BỒI THƯỜNG THIỆT HẠI</strong> theo Điều 307 LTM 2005.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button next sprint -->
+        <div class="flex justify-between pt-2">
+          <button onclick="switchTab('sprint2')" class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-xs">
+            &larr; Về Chặng 2
+          </button>
+          <button onclick="markSprintDone('sprint3'); switchTab('sprint4')" class="px-5 py-2.5 bg-cobalt hover:bg-cobalt-hover text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-md shadow-cobalt/20 transition">
+            Hoàn thành Chặng 3 &rarr; Sang Chặng 4 (Phục Hồi, Phá Sản & Tranh Chấp)
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- SPRINT 4 CONTAINER: PHỤC HỒI, PHÁ SẢN & GIẢI QUYẾT TRANH CHẤP -->
+      <section id="sprint4-content" class="sprint-section hidden space-y-6">
+        
+        <!-- Sprint 4 Header Banner -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded-lg bg-amber-600 text-white">Chặng 4 • 35 Phút</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Chuẩn đầu ra: CLO4</span>
+          </div>
+          <h2 class="text-xl font-extrabold text-navy-800 dark:text-white">Chương 4: Phục Hồi, Phá Sản & Giải Quyết Tranh Chấp Kinh Doanh</h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+            Luật Phục hồi, phá sản 2025 (hiệu lực 01/3/2026), mốc 6 tháng KNTT, quyền và nghĩa vụ nộp đơn, phân biệt giải thể vs phá sản, trọng tài phán quyết chung thẩm và mô hình TAND khu vực từ 01/7/2025.
+          </p>
+        </div>
+
+        <!-- DECISION TREE: LUẬT PHỤC HỒI, PHÁ SẢN 2025 (HIỆU LỰC 01/3/2026) -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <i data-lucide="git-merge" class="w-4 h-4 text-amber-500"></i>
+                Cây Quyết Định (Decision Tree): Phục Hồi vs Phá Sản (Luật 142/2025/QH15)
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Hiệu lực từ 01/3/2026 – Thay đổi triết lý từ "xử lý hậu quả" sang "can thiệp sớm, ưu tiên phục hồi"</p>
+            </div>
+            <span class="text-[11px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-lg border border-amber-300 dark:border-amber-700">Mốc 06 Tháng</span>
+          </div>
+
+          <!-- 2 Financial States Flow -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Branch 1: Nguy cơ mất KNTT (<= 6 months) -->
+            <div class="p-4 rounded-xl border border-blue-200 dark:border-slate-700 bg-blue-50/40 dark:bg-navy-900/40 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-cobalt font-extrabold text-[11px]">TÌNH TRẠNG 1</span>
+                <span class="text-xs font-bold text-cobalt">&le; 06 THÁNG</span>
+              </div>
+              <h4 class="text-sm font-bold text-navy-800 dark:text-white">Nguy cơ mất khả năng thanh toán</h4>
+              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Không thanh toán được khoản nợ sẽ đến hạn trong 06 tháng, hoặc nợ đã đến hạn nhưng chưa quá 06 tháng (Điều 5).
+              </p>
+              <div class="p-3 rounded-lg bg-white dark:bg-navy-800 border border-blue-200 dark:border-slate-700 text-xs space-y-1.5">
+                <div class="font-bold text-cobalt flex items-center gap-1.5">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i> Hướng xử lý: CHỈ YÊU CẦU PHỤC HỒI
+                </div>
+                <p class="text-slate-600 dark:text-slate-300">
+                  &bull; <strong>Ai có quyền nộp đơn:</strong> <em>CHỈ CHỦ THỂ NỘI BỘ</em> (Người ĐDTPL, HĐQT/HĐTV, chủ DNTN/TNHH 1TV).<br>
+                  &bull; <strong>Chủ nợ:</strong> <span class="text-red-500 font-bold">KHÔNG CÓ QUYỀN</span> nộp đơn phục hồi (xem Ví dụ 13).
+                </p>
+              </div>
+            </div>
+
+            <!-- Branch 2: Mất KNTT (> 6 months) -->
+            <div class="p-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-950/20 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/60 text-red-600 font-extrabold text-[11px]">TÌNH TRẠNG 2</span>
+                <span class="text-xs font-bold text-red-600">> 06 THÁNG</span>
+              </div>
+              <h4 class="text-sm font-bold text-navy-800 dark:text-white">Mất khả năng thanh toán</h4>
+              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Không thực hiện nghĩa vụ trả nợ sau 06 tháng kể từ ngày đến hạn (Điều 5).
+              </p>
+              <div class="p-3 rounded-lg bg-white dark:bg-navy-800 border border-red-200 dark:border-red-900/40 text-xs space-y-1.5">
+                <div class="font-bold text-red-600 flex items-center gap-1.5">
+                  <i data-lucide="alert-triangle" class="w-4 h-4"></i> Hướng xử lý: PHỤC HỒI HOẶC PHÁ SẢN
+                </div>
+                <p class="text-slate-600 dark:text-slate-300">
+                  &bull; <strong>Có quyền nộp đơn phá sản:</strong> Chủ nợ không bảo đảm / bảo đảm một phần, Người lao động / công đoàn.<br>
+                  &bull; <strong>CÓ NGHĨA VỤ nộp đơn phá sản:</strong> Người ĐDTPL, HĐQT/HĐTV. Nếu không nộp &rarr; Bồi thường thiệt hại & <strong>CẤM ĐẢM NHIỆM CHỨC VỤ QUẢN LÝ 03 NĂM</strong> (Điều 84).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thủ tục rút gọn Note -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 text-xs flex items-start gap-2.5">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold text-navy-800 dark:text-white">Thủ tục rút gọn (Điểm mới đột phá 2025):</span>
+              <span class="text-slate-600 dark:text-slate-300"> Áp dụng cho doanh nghiệp, HTX nhỏ, ít chủ nợ. Thời hạn thực hiện <strong>chỉ bằng 1/2</strong> thủ tục thông thường; không phải thành lập Ban đại diện chủ nợ; hồ sơ số hóa toàn diện trên Cổng TTQG về phục hồi, phá sản.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BẢNG ĐỐI CHIẾU GIẢI THỂ VS PHÁ SẢN -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="scale" class="w-4 h-4 text-cobalt"></i>
+              Bảng Đối Chiếu So Sánh: Giải Thể vs Phá Sản
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Câu hỏi phân loại bản chất thường gặp trong đề thi tự luận và trắc nghiệm</p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-700/60 font-bold text-slate-700 dark:text-slate-200">
+                  <th class="p-3">Tiêu chí đối chiếu</th>
+                  <th class="p-3 text-cobalt dark:text-blue-400">Giải thể doanh nghiệp</th>
+                  <th class="p-3 text-red-600 dark:text-red-400">Phá sản doanh nghiệp</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">1. Tình trạng tài chính</td>
+                  <td class="p-3 font-semibold text-emerald-600">CÒN KHẢ NĂNG thanh toán hết các khoản nợ và nghĩa vụ tài sản</td>
+                  <td class="p-3 font-semibold text-red-600">MẤT KHẢ NĂNG THANH TOÁN (quá hạn 06 tháng)</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">2. Bản chất thủ tục</td>
+                  <td class="p-3">Thủ tục <strong>HÀNH CHÍNH</strong> (tự nguyện hoặc bắt buộc theo luật)</td>
+                  <td class="p-3">Thủ tục <strong>TƯ PHÁP ĐẶC BIỆT</strong> giải quyết tập thể nhiều chủ nợ</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">3. Cơ quan quyết định</td>
+                  <td class="p-3">Nội bộ DN (Chủ sở hữu, HĐTV, ĐHĐCĐ) hoặc Cơ quan ĐKKD</td>
+                  <td class="p-3 font-bold text-purple-600 dark:text-purple-400">TÒA ÁN NHÂN DÂN (Thẩm phán ra quyết định)</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">4. Hệ quả với người quản lý</td>
+                  <td class="p-3 text-emerald-600">KHÔNG bị hạn chế quyền thành lập, quản lý DN mới</td>
+                  <td class="p-3 text-red-600 font-semibold">Có thể bị <strong>CẤM ĐẢM NHIỆM CHỨC VỤ QUẢN LÝ 03 NĂM</strong></td>
+                </tr>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-navy-700/40">
+                  <td class="p-3 font-bold text-navy-800 dark:text-white">5. Căn cứ điều chỉnh</td>
+                  <td class="p-3 text-slate-400">Điều 207, 208 Luật Doanh nghiệp 2020</td>
+                  <td class="p-3 text-slate-400">Luật Phục hồi, phá sản 2025</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4 PHƯƠNG THỨC GIẢI QUYẾT TRANH CHẤP & MÔ HÌNH TAND KHU VỰC 2025 -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 dark:border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-navy-800 dark:text-white flex items-center gap-2">
+              <i data-lucide="gavel" class="w-4 h-4 text-cobalt"></i>
+              Ma Trận 4 Phương Thức Giải Quyết Tranh Chấp Kinh Doanh, Thương Mại
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Điều 317 LTM; Nghị định 22/2017/NĐ-CP; Luật TTTM 2010; BLTTDS (sửa đổi 2025)</p>
+          </div>
+
+          <!-- 4 Cards Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            
+            <!-- Method 1: Thương lượng -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-navy-800 dark:text-white flex items-center justify-between">
+                <span>1. Thương lượng</span>
+                <span class="text-[10px] text-slate-400">Tự nguyện</span>
+              </div>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 text-[11px]">
+                <li>&bull; <strong>Bên thứ ba:</strong> Không có.</li>
+                <li>&bull; <strong>Bảo mật:</strong> Rất cao.</li>
+                <li>&bull; <strong>Chi phí:</strong> Thấp nhất.</li>
+                <li>&bull; <strong>Thi hành:</strong> Tự nguyện, không có cơ chế cưỡng chế nhà nước.</li>
+              </ul>
+            </div>
+
+            <!-- Method 2: Hòa giải TM -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-700/40 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-navy-800 dark:text-white flex items-center justify-between">
+                <span>2. Hòa giải thương mại</span>
+                <span class="text-[10px] text-cobalt">NĐ 22/2017</span>
+              </div>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 text-[11px]">
+                <li>&bull; <strong>Bên thứ ba:</strong> Hòa giải viên thương mại.</li>
+                <li>&bull; <strong>Điều kiện:</strong> Thỏa thuận hòa giải.</li>
+                <li>&bull; <strong>Bảo mật:</strong> Cao.</li>
+                <li>&bull; <strong>Thi hành:</strong> Kết quả hòa giải thành có thể yêu cầu <strong>Tòa án công nhận</strong> để được cưỡng chế.</li>
+              </ul>
+            </div>
+
+            <!-- Method 3: Trọng tài TM -->
+            <div class="p-3.5 rounded-xl bg-indigo-50/50 dark:bg-navy-700/60 border border-indigo-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-indigo-700 dark:text-indigo-300 flex items-center justify-between">
+                <span>3. Trọng tài thương mại</span>
+                <span class="text-[10px] text-indigo-600">Luật TTTM 2010</span>
+              </div>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 text-[11px]">
+                <li>&bull; <strong>Điều kiện:</strong> Thỏa thuận trọng tài bằng văn bản (độc lập với hợp đồng).</li>
+                <li>&bull; <strong>Tòa án:</strong> <span class="text-red-500 font-bold">Phải từ chối thụ lý</span> nếu có thỏa thuận TT hợp lệ (Điều 6).</li>
+                <li>&bull; <strong>Hiệu lực:</strong> Phán quyết <strong>CHUNG THẨM</strong>, có hiệu lực ngay (không kháng cáo).</li>
+                <li>&bull; <strong>Hủy phán quyết:</strong> Yêu cầu Tòa án hủy trong <strong>30 ngày</strong> (Điều 68).</li>
+              </ul>
+            </div>
+
+            <!-- Method 4: Tòa án -->
+            <div class="p-3.5 rounded-xl bg-blue-50/50 dark:bg-navy-700/60 border border-blue-200 dark:border-slate-700 space-y-2">
+              <div class="font-bold text-cobalt dark:text-blue-300 flex items-center justify-between">
+                <span>4. Tòa án nhân dân</span>
+                <span class="text-[10px] text-cobalt">Luật 85/2025</span>
+              </div>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 text-[11px]">
+                <li>&bull; <strong>Bản chất:</strong> Tài phán nhà nước, xét xử công khai, 02 cấp (Sơ thẩm & Phúc thẩm).</li>
+                <li>&bull; <strong>Mới 01/7/2025:</strong> <strong>TAND KHU VỰC</strong> xử sơ thẩm tranh chấp KDTM.</li>
+                <li>&bull; <strong>Thời hiệu khởi kiện:</strong> <strong>02 NĂM</strong> (Điều 319 LTM 2005; Tòa chỉ đình chỉ khi đương sự yêu cầu theo Điều 149 BLDS).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP-BY-STEP CASE SOLUTIONS: VÍ DỤ 13, 14, 15 & TÌNH HUỐNG CTCP ĐẠI PHÁT -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            Lời Giải Chi Tiết Các Tình Huống Chương 4
+          </h3>
+
+          <!-- Accordion: Ví dụ 13 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd13')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 text-[10px] font-extrabold">VÍ DỤ 13</span>
+                TNHH Bao bì Minh Long nợ 8 tỷ sẽ đến hạn sau 4 tháng (Ngân hàng muốn nộp đơn phục hồi)
+              </span>
+              <i id="icon-acc-vd13" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd13" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 5, Điều 24 Luật Phục hồi, phá sản 2025.</p>
+              <p>1. <strong>Minh Long đang ở tình trạng tài chính nào?</strong><br>
+              &rarr; Khoản nợ sẽ đến hạn trong 04 tháng (&le; 06 tháng) mà dự báo không trả được &rarr; <strong>NGUY CƠ MẤT KHẢ NĂNG THANH TOÁN</strong> theo Điều 5 Luật 2025.</p>
+              <p>2. <strong>Ngân hàng có quyền nộp đơn yêu cầu phục hồi không? Ai có quyền?</strong><br>
+              &rarr; <strong>KHÔNG.</strong> Ngân hàng là chủ nợ nên không có quyền nộp đơn phục hồi. Quyền nộp đơn phục hồi CHỈ thuộc về chủ thể nội bộ của Minh Long (Người đại diện theo pháp luật hoặc Hội đồng thành viên theo Điều 24).</p>
+              <p>3. <strong>Nếu quá 06 tháng kể từ ngày đến hạn vẫn không trả được nợ thì sao?</strong><br>
+              &rarr; Khi đó Minh Long chuyển sang tình trạng <strong>MẤT KHẢ NĂNG THANH TOÁN</strong>. Lúc này, Ngân hàng có quyền nộp đơn phá sản; đồng thời Người ĐDTPL và HĐTV của Minh Long CÓ NGHĨA VỤ phải nộp đơn yêu cầu phá sản (nếu chưa nộp đơn phục hồi).</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 14 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd14')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 text-[10px] font-extrabold">VÍ DỤ 14</span>
+                Có thỏa thuận trọng tài VIAC nhưng Công ty A vẫn khởi kiện tại TAND khu vực
+              </span>
+              <i id="icon-acc-vd14" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd14" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 6, Điều 61, Điều 68 Luật Trọng tài thương mại 2010.</p>
+              <p>1. <strong>Tòa án có thụ lý vụ án không?</strong><br>
+              &rarr; <strong>KHÔNG.</strong> Theo Điều 6 Luật TTTM 2010, khi các bên đã có thỏa thuận trọng tài hợp lệ (bằng văn bản, chọn trung tâm trọng tài rõ ràng) thì Tòa án <strong>phải từ chối thụ lý</strong>, trừ trường hợp thỏa thuận trọng tài vô hiệu hoặc không thể thực hiện được.</p>
+              <p>2. <strong>Nếu VIAC ra phán quyết bất lợi, A có thể kháng cáo không?</strong><br>
+              &rarr; <strong>KHÔNG THỂ KHÁNG CÁO.</strong> Phán quyết của Trọng tài thương mại mang tính <strong>chung thẩm</strong>, có hiệu lực thi hành ngay. A chỉ có thể nộp đơn yêu cầu Tòa án hủy phán quyết trọng tài trong thời hạn <strong>30 ngày</strong> kể từ ngày nhận phán quyết nếu chứng minh được một trong các căn cứ luật định tại Điều 68 (như vi phạm tố tụng, trái nguyên tắc cơ bản của pháp luật VN...).</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Ví dụ 15 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-navy-800 overflow-hidden">
+            <button onclick="toggleAccordion('acc-vd15')" class="w-full p-4 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-navy-700/50 transition">
+              <span class="text-xs font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 text-[10px] font-extrabold">VÍ DỤ 15</span>
+                Công ty X nợ từ 15/3/2024 – Ngày 01/10/2026 khởi kiện đòi nợ (Thời hiệu 02 năm)
+              </span>
+              <i id="icon-acc-vd15" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-vd15" class="hidden p-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-navy-900/30 text-xs space-y-2 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 319 LTM 2005; Điều 35, 39 BLTTDS (sửa đổi 2025); Điều 149 BLDS 2015.</p>
+              <p>1. <strong>Công ty Y nộp đơn khởi kiện tại Tòa án nào?</strong><br>
+              &rarr; Nộp tại <strong>Tòa án nhân dân khu vực</strong> nơi Công ty X (bị đơn) có trụ sở tại Hà Nội để giải quyết theo thủ tục sơ thẩm.</p>
+              <p>2. <strong>Thời hiệu khởi kiện còn không? Tòa án xử lý thế nào?</strong><br>
+              &rarr; Thời hiệu khởi kiện tranh chấp thương mại là <strong>02 năm</strong> (Điều 319 LTM) tính từ 16/3/2024 &rarr; Thời hiệu <strong>đã hết vào tháng 3/2026</strong>.<br>
+              &rarr; Tuy nhiên, theo Điều 149 BLDS, Tòa án vẫn thụ lý đơn; Tòa án không tự mình áp dụng thời hiệu mà <em>chỉ áp dụng khi một bên hoặc các bên đương sự có yêu cầu trước khi Tòa án cấp sơ thẩm ra bản án, quyết định</em>. Nếu X có yêu cầu áp dụng thời hiệu, Tòa án sẽ ra quyết định <strong>đình chỉ giải quyết vụ án</strong>.</p>
+            </div>
+          </div>
+
+          <!-- Accordion: Tình huống CTCP Đại Phát -->
+          <div class="border border-amber-300 dark:border-amber-700/70 rounded-xl bg-amber-50/20 dark:bg-amber-950/10 overflow-hidden">
+            <button onclick="toggleAccordion('acc-case4')" class="w-full p-4 text-left flex items-center justify-between hover:bg-amber-50/50 dark:hover:bg-amber-950/30 transition">
+              <span class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[10px] font-extrabold">TÌNH HUỐNG THẢO LUẬN CUỐI CHƯƠNG 4</span>
+                CTCP Đại Phát nợ lương 4 tháng, nợ nhà cung cấp 12 tỷ quá hạn 8 tháng (HĐQT chờ đơn hàng)
+              </span>
+              <i id="icon-acc-case4" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            </button>
+            <div id="acc-case4" class="hidden p-4 border-t border-amber-200 dark:border-amber-800/40 bg-white dark:bg-navy-800 text-xs space-y-2.5 leading-relaxed">
+              <p><strong>Căn cứ:</strong> Điều 5, 38, 84 Luật Phục hồi, phá sản 2025; BLTTDS 2015.</p>
+              <div class="space-y-1.5 text-slate-700 dark:text-slate-200">
+                <p><strong>1. Đại Phát đang ở tình trạng tài chính nào? Ai có quyền, ai có nghĩa vụ nộp đơn?</strong><br>
+                &rarr; Khoản nợ 12 tỷ đã quá hạn 8 tháng (&gt; 06 tháng) &rarr; Đại Phát ở tình trạng <strong>MẤT KHẢ NĂNG THANH TOÁN</strong>.<br>
+                &rarr; <strong>Ai có quyền nộp đơn phá sản:</strong> Nhà cung cấp (chủ nợ không bảo đảm), Người lao động hoặc công đoàn cơ sở (nợ lương 4 tháng).<br>
+                &rarr; <strong>Ai có NGHĨA VỤ nộp đơn phá sản:</strong> Người đại diện theo pháp luật và Hội đồng quản trị của Đại Phát. Việc HĐQT trì hoãn vì "chờ đơn hàng mới" là <strong>vi phạm nghĩa vụ pháp lý</strong>; các thành viên HĐQT có thể phải liên đới bồi thường thiệt hại và bị <strong>cấm đảm nhiệm chức vụ quản lý doanh nghiệp trong 03 năm</strong> theo Điều 84.</p>
+                
+                <p><strong>2. Nhà cung cấp nên khởi kiện đòi nợ hay nộp đơn yêu cầu phá sản? (Phân tích Lợi – Hại):</strong><br>
+                &bull; <strong>Phương án 1: Khởi kiện đòi nợ tại Tòa án:</strong><br>
+                - <em>Lợi:</em> Tranh chấp song phương rõ ràng, dễ chứng minh công nợ để lấy bản án có hiệu lực pháp luật.<br>
+                - <em>Hại:</em> Thủ tục kéo dài (sơ thẩm, phúc thẩm), tốn án phí; khi thi hành án nếu Đại Phát đã tẩu tán hoặc không còn tài sản thì bản án chỉ nằm trên giấy.<br>
+                &bull; <strong>Phương án 2: Nộp đơn yêu cầu mở thủ tục phá sản (Khuyên dùng):</strong><br>
+                - <em>Lợi:</em> Tạo áp lực pháp lý cực lớn lên HĐQT (vì nguy cơ mất quyền kiểm soát và bị cấm chức vụ 3 năm); Tòa án có thể áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài sản ngay, chỉ định Quản tài viên giám sát tránh tẩu tán; nếu có triển vọng đơn hàng mới, các bên có thể đàm phán thông qua <em>Phương án phục hồi</em> để thu nợ dần.<br>
+                - <em>Hại:</em> Phải tạm ứng chi phí phá sản; nếu tuyên bố phá sản thì tài sản thanh lý phải chia theo thứ tự ưu tiên (chi phí phá sản & lương công nhân trước, rồi mới chia tỷ lệ cho chủ nợ không bảo đảm).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button next sprint -->
+        <div class="flex justify-between pt-2">
+          <button onclick="switchTab('sprint3')" class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-xs">
+            &larr; Về Chặng 3
+          </button>
+          <button onclick="markSprintDone('sprint4'); switchTab('sprint5')" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-md shadow-amber-600/20 transition">
+            Hoàn thành Chặng 4 &rarr; Vào Phòng Luyện Thi (Exam Arena)
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- SPRINT 5 CONTAINER: PHÒNG LUYỆN THI & THỰC CHIẾN TÌNH HUỐNG (EXAM ARENA) -->
+      <section id="sprint5-content" class="sprint-section hidden space-y-6">
+        
+        <!-- Sprint 5 Header Banner -->
+        <div class="bg-gradient-to-r from-red-600 to-rose-700 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded-lg bg-black/20 text-white border border-white/20">Chặng 5 • 15 Phút</span>
+            <span class="text-xs font-bold text-rose-100 flex items-center gap-1">
+              <i data-lucide="flame" class="w-4 h-4 text-amber-300"></i> Phòng Luyện Thi Tinh Gọn
+            </span>
+          </div>
+          <h2 class="text-xl font-extrabold">Exam Arena: 20 Câu Bẫy Pháp Lý & 4 Tình Huống Cuối Chương</h2>
+          <p class="text-xs sm:text-sm text-rose-100 mt-1 leading-relaxed">
+            Chấm điểm tự động tức thì, hiển thị ngay căn cứ điều luật giải thích sau mỗi câu chọn. Tự thực hành giải 4 tình huống lớn trước khi mở xem đáp án chuẩn.
+          </p>
+          
+          <!-- Live Quiz Score Bar -->
+          <div class="mt-4 pt-4 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2">
+              <span>Điểm số trắc nghiệm:</span>
+              <span id="quizScoreText" class="font-extrabold text-amber-300 text-base">0 / 20 câu</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold transition flex items-center gap-1.5 text-xs">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Làm lại từ đầu
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB NAVIGATION: 20 MCQS VS 4 CASES -->
+        <div class="flex border-b border-slate-200 dark:border-slate-800 gap-4 text-xs font-bold">
+          <button onclick="switchExamTab('mcq')" id="btn-exam-mcq" class="py-2.5 border-b-2 border-cobalt text-cobalt dark:text-blue-400 flex items-center gap-2">
+            <i data-lucide="check-square" class="w-4 h-4"></i> 20 Câu Trắc Nghiệm Bẫy Pháp Lý
+          </button>
+          <button onclick="switchExamTab('cases')" id="btn-exam-cases" class="py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-2">
+            <i data-lucide="briefcase" class="w-4 h-4"></i> 4 Tình Huống Thảo Luận Thực Chiến
+          </button>
+        </div>
+
+        <!-- PART A: 20 INTERACTIVE MCQS -->
+        <div id="exam-mcq-container" class="space-y-4">
+          <div id="quizQuestionsList" class="space-y-4">
+            <!-- 20 questions will be populated or static -->
+          </div>
+        </div>
+
+        <!-- PART B: 4 INTERACTIVE CASES -->
+        <div id="exam-cases-container" class="hidden space-y-6">
+          
+          <!-- Case 1: Chương 1 -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-cobalt font-extrabold text-[10px]">TÌNH HUỐNG 1 (CHƯƠNG 1)</span>
+              <span class="text-xs text-slate-400">Sinh viên M bán online 150 đơn/tháng</span>
+            </div>
+            <h4 class="text-sm font-bold text-navy-800 dark:text-white">Sinh viên M mở gian hàng trên sàn TMĐT bán quần áo tự thiết kế, 150 đơn/tháng nhưng chưa ĐKKD, cho rằng "chỉ bán cho vui nên không phải thương nhân".</h4>
+            <div class="space-y-2 text-xs">
+              <label class="block font-semibold text-slate-600 dark:text-slate-300">Nhập phương án giải quyết của bạn:</label>
+              <textarea id="userCaseAns1" rows="3" placeholder="Gõ phân tích của bạn: Hoạt động của M có phải hoạt động thương mại? M có phải ĐKKD không? Hậu quả nếu không ĐKKD?..." class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cobalt"></textarea>
+              <button onclick="revealCaseSolution('case1')" class="px-4 py-2 bg-cobalt text-white rounded-lg font-bold text-xs hover:bg-cobalt-hover transition flex items-center gap-1.5 shadow">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Đối chiếu đáp án chuẩn & Căn cứ pháp lý
+              </button>
+              <div id="sol-case1" class="hidden mt-3 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 space-y-1.5 text-xs text-emerald-950 dark:text-emerald-200">
+                <p class="font-bold flex items-center gap-1"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ĐÁP ÁN CHUẨN (CLO1 - Điều 3, Điều 6 LTM; NĐ 39/2007; Luật TMĐT 2025):</p>
+                <p>1. <strong>Là hoạt động thương mại:</strong> Mục đích sinh lợi (Điều 3). Khái niệm "cho vui" không loại trừ bản chất sinh lợi.</p>
+                <p>2. <strong>Bắt buộc đăng ký kinh doanh:</strong> 150 đơn/tháng là quy mô chuyên nghiệp, không thuộc diện bán hàng rong quà vặt theo NĐ 39/2007/NĐ-CP.</p>
+                <p>3. <strong>Hậu quả pháp lý:</strong> Bị phạt hành chính 5 - 10 triệu theo NĐ 122/2021/NĐ-CP; bị truy thu thuế; bị sàn TMĐT xóa gian hàng vì không xác thực được định danh/MST theo Luật TMĐT 2025.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 2: Chương 2 -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 font-extrabold text-[10px]">TÌNH HUỐNG 2 (CHƯƠNG 2)</span>
+              <span class="text-xs text-slate-400">CTCP Nam Phong (H 70% bán xưởng 40% TS, K 10% đòi mua lại)</span>
+            </div>
+            <h4 class="text-sm font-bold text-navy-800 dark:text-white">ĐHĐCĐ CTCP Nam Phong biểu quyết bán nhà xưởng trị giá 40% tổng tài sản. Chỉ cổ đông H (70%) tán thành. Cổ đông K (10%) phản đối và đòi công ty mua lại cổ phần.</h4>
+            <div class="space-y-2 text-xs">
+              <label class="block font-semibold text-slate-600 dark:text-slate-300">Nhập phương án giải quyết của bạn:</label>
+              <textarea id="userCaseAns2" rows="3" placeholder="Nghị quyết có được thông qua không? K có quyền yêu cầu công ty mua lại cổ phần không? Căn cứ điều mấy LDN 2020?..." class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cobalt"></textarea>
+              <button onclick="revealCaseSolution('case2')" class="px-4 py-2 bg-cobalt text-white rounded-lg font-bold text-xs hover:bg-cobalt-hover transition flex items-center gap-1.5 shadow">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Đối chiếu đáp án chuẩn & Căn cứ pháp lý
+              </button>
+              <div id="sol-case2" class="hidden mt-3 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 space-y-1.5 text-xs text-emerald-950 dark:text-emerald-200">
+                <p class="font-bold flex items-center gap-1"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ĐÁP ÁN CHUẨN (CLO2 - Điều 148, Điều 132 LDN 2020):</p>
+                <p>1. <strong>Nghị quyết ĐÃ ĐƯỢC THÔNG QUA:</strong> Bán tài sản &ge; 35% tổng TS là vấn đề quan trọng cần &ge; 65% phiếu biểu quyết của cổ đông dự họp. Cổ đông H nắm 70% &gt; 65% nên nghị quyết có hiệu lực pháp luật.</p>
+                <p>2. <strong>Cổ đông K KHÔNG CÓ QUYỀN yêu cầu cty mua lại cổ phần:</strong> Điều 132 LDN chỉ cho phép cổ đông yêu cầu mua lại khi phản đối nghị quyết về <em>tổ chức lại công ty</em> hoặc <em>thay đổi quyền nghĩa vụ trong Điều lệ</em>. Bán tài sản 40% không thuộc hai trường hợp này.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 3: Chương 3 -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-cobalt/10 text-cobalt font-extrabold text-[10px]">TÌNH HUỐNG 3 (CHƯƠNG 3)</span>
+              <span class="text-xs text-slate-400">Xuất khẩu cà phê Việt Nam – Singapore (Giá tăng, giao thiếu 20 tấn)</span>
+            </div>
+            <h4 class="text-sm font-bold text-navy-800 dark:text-white">Cty A (VN) bán 50 tấn cà phê cho Cty B (Singapore) qua email, phạt 5% phần vi phạm. Giá tăng mạnh A chỉ giao 30 tấn. B mua bù 20 tấn đắt hơn 400 triệu.</h4>
+            <div class="space-y-2 text-xs">
+              <label class="block font-semibold text-slate-600 dark:text-slate-300">Nhập phương án giải quyết của bạn:</label>
+              <textarea id="userCaseAns3" rows="3" placeholder="Hợp đồng qua email có hợp lệ? Luật nào áp dụng? Giá tăng có phải bất khả kháng? B được áp dụng những chế tài nào?..." class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cobalt"></textarea>
+              <button onclick="revealCaseSolution('case3')" class="px-4 py-2 bg-cobalt text-white rounded-lg font-bold text-xs hover:bg-cobalt-hover transition flex items-center gap-1.5 shadow">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Đối chiếu đáp án chuẩn & Căn cứ pháp lý
+              </button>
+              <div id="sol-case3" class="hidden mt-3 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 space-y-1.5 text-xs text-emerald-950 dark:text-emerald-200">
+                <p class="font-bold flex items-center gap-1"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ĐÁP ÁN CHUẨN (CLO3 - CISG 1980; Điều 15, 294, 301, 307 LTM 2005):</p>
+                <p>1. <strong>Email hợp lệ:</strong> Thông điệp dữ liệu có giá trị văn bản. Áp dụng <strong>Công ước Viên 1980 (CISG)</strong> vì VN và Singapore đều là thành viên.</p>
+                <p>2. <strong>Giá thị trường tăng KHÔNG PHẢI bất khả kháng:</strong> Đây là rủi ro thương mại mà doanh nghiệp phải lường trước, A không được miễn trách nhiệm.</p>
+                <p>3. <strong>B được áp dụng CẢ HAI chế tài:</strong> Phạt vi phạm 5% trên 20 tấn vi phạm + Bồi thường toàn bộ thiệt hại thực tế 400 triệu đồng mua bù.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 4: Chương 4 -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 font-extrabold text-[10px]">TÌNH HUỐNG 4 (CHƯƠNG 4)</span>
+              <span class="text-xs text-slate-400">CTCP Đại Phát nợ lương 4 tháng, nợ nhà cung cấp 12 tỷ quá hạn 8 tháng</span>
+            </div>
+            <h4 class="text-sm font-bold text-navy-800 dark:text-white">HĐQT Đại Phát không nộp đơn phá sản vì "chờ đơn hàng mới". Nhà cung cấp băn khoăn nên kiện đòi nợ tại TAND khu vực hay nộp đơn phá sản?</h4>
+            <div class="space-y-2 text-xs">
+              <label class="block font-semibold text-slate-600 dark:text-slate-300">Nhập phương án giải quyết của bạn:</label>
+              <textarea id="userCaseAns4" rows="3" placeholder="Đại Phát ở tình trạng tài chính nào? Ai có quyền, ai có nghĩa vụ nộp đơn? Phân tích Lợi - Hại giữa kiện đòi nợ và nộp đơn phá sản?..." class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-900 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cobalt"></textarea>
+              <button onclick="revealCaseSolution('case4')" class="px-4 py-2 bg-cobalt text-white rounded-lg font-bold text-xs hover:bg-cobalt-hover transition flex items-center gap-1.5 shadow">
+                <i data-lucide="eye" class="w-4 h-4"></i> Đối chiếu đáp án chuẩn & Căn cứ pháp lý
+              </button>
+              <div id="sol-case4" class="hidden mt-3 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 space-y-1.5 text-xs text-emerald-950 dark:text-emerald-200">
+                <p class="font-bold flex items-center gap-1"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> ĐÁP ÁN CHUẨN (CLO4 - Luật Phục hồi, phá sản 2025 Điều 5, 38, 84):</p>
+                <p>1. <strong>Tình trạng MẤT KHẢ NĂNG THANH TOÁN</strong> (> 06 tháng). HĐQT có <strong>nghĩa vụ</strong> nộp đơn; nếu trì hoãn sẽ phải bồi thường và bị <strong>cấm làm người quản lý trong 03 năm</strong>.</p>
+                <p>2. <strong>Khuyên chọn nộp đơn phá sản:</strong> Tạo áp lực phong tỏa tài sản ngay qua Tòa án, tránh tẩu tán nợ; nếu có triển vọng đơn hàng mới thì đàm phán thông qua <em>Phương án phục hồi</em> để thu hồi nợ dần, hiệu quả hơn kiện dân sự đòi nợ thông thường khi đối tác đã cạn kiệt tài sản.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Back to Sprint 4 button -->
+        <div class="flex justify-start pt-2">
+          <button onclick="switchTab('sprint4')" class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-xs">
+            &larr; Về Chặng 4
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- RIGHT COLUMN: QUICK REFERENCE / CHEAT SHEET & NEW LAWS 2025-2026 (Col span 3) -->
+    <aside id="quickRefSidebar" class="xl:col-span-3 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-navy-800/60 p-4 lg:p-5 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-61px)]">
+      
+      <!-- Cheat Sheet Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <i data-lucide="bookmark" class="w-4 h-4"></i>
+          </span>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-navy-800 dark:text-white">Tra Cứu Nhanh Cheat Sheet</h2>
+        </div>
+        <span class="text-[10px] font-bold text-cobalt bg-blue-50 dark:bg-navy-700 px-2 py-0.5 rounded-full">Thi Cử 2026</span>
+      </div>
+
+      <!-- Quick Search Filter Box -->
+      <div class="relative">
+        <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400"></i>
+        <input type="text" id="cheatSearchInput" oninput="filterCheatSheet()" placeholder="Tìm nhanh: 8%, 2 năm, 30 ngày, phá sản..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-navy-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-cobalt">
+      </div>
+
+      <!-- SECTION 1: CÁC CON SỐ "VÀNG" ĐỀ THI HAY HỎI -->
+      <div class="space-y-2">
+        <h3 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+          <span>Bảng Con Số "Vàng" Pháp Lý</span>
+          <span class="text-amber-500 font-bold">Trọng tâm</span>
+        </h3>
+
+        <div id="goldenNumbersList" class="space-y-2">
+          <!-- 8% -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-700/30 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-cobalt dark:text-blue-400 text-sm font-mono">Mức phạt trần 8%</span>
+              <span class="text-[10px] text-slate-400">Điều 301 LTM</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">Tối đa 8% giá trị phần nghĩa vụ bị vi phạm (chỉ áp dụng khi HĐ có thỏa thuận phạt; trừ dịch vụ giám định thương mại).</p>
+          </div>
+
+          <!-- 2 năm -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-700/30 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-cobalt dark:text-blue-400 text-sm font-mono">Thời hiệu 02 năm</span>
+              <span class="text-[10px] text-slate-400">Điều 319 LTM</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">Thời hiệu khởi kiện tranh chấp thương mại tính từ thời điểm quyền, lợi ích hợp pháp bị xâm phạm.</p>
+          </div>
+
+          <!-- 6 tháng -->
+          <div class="cheat-item p-2.5 rounded-xl border border-amber-200 dark:border-amber-800/40 hover:border-amber-500 bg-amber-50/30 dark:bg-amber-950/10 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-amber-600 dark:text-amber-400 text-sm font-mono">Mốc 06 tháng KNTT</span>
+              <span class="text-[10px] text-slate-400">Điều 5 Luật 2025</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">&le; 06 tháng: Nguy cơ mất KNTT (chỉ phục hồi). &gt; 06 tháng: Mất KNTT (phục hồi hoặc phá sản).</p>
+          </div>
+
+          <!-- 50% - 65% - 75% -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-700/30 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-cobalt dark:text-blue-400 text-sm font-mono">50% &bull; 65% &bull; 75%</span>
+              <span class="text-[10px] text-slate-400">Biểu quyết</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+              &bull; <strong>TNHH:</strong> &ge; 65% thông thường; &ge; 75% quan trọng (Điều 59).<br>
+              &bull; <strong>CTCP:</strong> &gt; 50% thông thường; &ge; 65% quan trọng (Điều 148).
+            </p>
+          </div>
+
+          <!-- 3 ngày -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-700/30 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-slate-800 dark:text-slate-200 font-mono">03 ngày làm việc</span>
+              <span class="text-[10px] text-slate-400">Điều 26 LDN</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">Thời hạn cơ quan ĐKKD xem xét cấp GCN ĐKKD hoặc thông báo sửa đổi hồ sơ.</p>
+          </div>
+
+          <!-- 30 ngày -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-700/30 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-slate-800 dark:text-slate-200 font-mono">30 ngày</span>
+              <span class="text-[10px] text-slate-400">2 Quy tắc</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+              1. Chờ chào bán nội bộ vốn TNHH (Điều 52 LDN).<br>
+              2. Thời hạn nộp đơn yêu cầu Tòa án hủy phán quyết Trọng tài (Điều 68 Luật TTTM).
+            </p>
+          </div>
+
+          <!-- 90 ngày -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-700/30 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-slate-800 dark:text-slate-200 font-mono">90 ngày</span>
+              <span class="text-[10px] text-slate-400">Điều 47, 75 LDN</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">Thời hạn góp đủ vốn điều lệ kể từ ngày được cấp GCN ĐKDN.</p>
+          </div>
+
+          <!-- 3 năm -->
+          <div class="cheat-item p-2.5 rounded-xl border border-red-200 dark:border-red-900/40 hover:border-red-500 bg-red-50/30 dark:bg-red-950/20 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-red-600 dark:text-red-400 font-mono">03 năm</span>
+              <span class="text-[10px] text-slate-400">3 Quy tắc cấm/hạn chế</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+              1. Hạn chế chuyển nhượng CPPT của CĐSL CTCP (Điều 120).<br>
+              2. Hiệu lực cổ phần ưu đãi biểu quyết của CĐSL.<br>
+              3. Cấm đảm nhiệm chức vụ quản lý khi vi phạm nghĩa vụ nộp đơn phá sản (Điều 84 Luật Phục hồi, phá sản 2025).
+            </p>
+          </div>
+
+          <!-- 25% -->
+          <div class="cheat-item p-2.5 rounded-xl border border-amber-200 dark:border-amber-800/40 hover:border-amber-500 bg-amber-50/30 dark:bg-amber-950/10 text-xs transition">
+            <div class="flex items-center justify-between font-bold">
+              <span class="text-amber-600 dark:text-amber-400 font-mono">Từ 25% vốn</span>
+              <span class="text-[10px] text-slate-400">Mới 2025</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">Tỷ lệ xác định Chủ sở hữu hưởng lợi của doanh nghiệp theo Luật 76/2025/QH15.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: VĂN BẢN PHÁP LUẬT MỚI HIỆU LỰC 2025–2026 -->
+      <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
+        <h3 class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+          <span>Văn Bản Mới Hiệu Lực 2025–2026</span>
+          <span class="text-cobalt font-bold">Trích dẫn</span>
+        </h3>
+
+        <div id="newLawsList" class="space-y-2 text-xs">
+          <!-- Law 1 -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/40 dark:bg-navy-700/20">
+            <span class="font-bold text-cobalt dark:text-blue-400 block">Luật Phục hồi, phá sản 2025</span>
+            <span class="text-[10px] text-slate-400 block">Số 142/2025/QH15 &bull; Hiệu lực 01/3/2026</span>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1">Thay thế Luật Phá sản 2014; ghi nhận 2 thủ tục độc lập, ưu tiên phục hồi sớm, thủ tục rút gọn 1/2 thời gian.</p>
+          </div>
+
+          <!-- Law 2 -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/40 dark:bg-navy-700/20">
+            <span class="font-bold text-cobalt dark:text-blue-400 block">Luật Thương mại điện tử 2025</span>
+            <span class="text-[10px] text-slate-400 block">Số 122/2025/QH15 &bull; Hiệu lực 01/7/2026</span>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1">Xác thực bắt buộc người bán, định danh cá nhân livestream, quy định rõ trách nhiệm xử lý khiếu nại của sàn TMĐT.</p>
+          </div>
+
+          <!-- Law 3 -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/40 dark:bg-navy-700/20">
+            <span class="font-bold text-cobalt dark:text-blue-400 block">Luật sửa đổi LDN số 76/2025/QH15</span>
+            <span class="text-[10px] text-slate-400 block">Hiệu lực từ 01/7/2025</span>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1">Chủ sở hữu hưởng lợi từ 25% vốn; cho phép cán bộ, công chức góp vốn vào DN khoa học công nghệ, chuyển đổi số.</p>
+          </div>
+
+          <!-- Law 4 -->
+          <div class="cheat-item p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/40 dark:bg-navy-700/20">
+            <span class="font-bold text-cobalt dark:text-blue-400 block">Luật số 85/2025/QH15 (sửa BLTTDS)</span>
+            <span class="text-[10px] text-slate-400 block">Hiệu lực từ 01/7/2025</span>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1">Hệ thống Tòa án 03 cấp; chuyển toàn bộ thẩm quyền sơ thẩm tranh chấp kinh doanh thương mại về cho <strong>TAND khu vực</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION CORE LOGIC -->
+  <script>
+    // Theme Management
+    function initTheme() {
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+    function toggleTheme() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+      }
+    }
+    initTheme();
+
+    // SPRINT TAB SWITCHING
+    let currentSprint = 'sprint1';
+    const sprintNames = {
+      sprint1: 'Chặng 1: Khái quát Luật Thương mại (30p)',
+      sprint2: 'Chặng 2: Chủ thể kinh doanh (50p)',
+      sprint3: 'Chặng 3: Hợp đồng & Hoạt động TM (50p)',
+      sprint4: 'Chặng 4: Phục hồi, Phá sản & Tranh chấp (35p)',
+      sprint5: 'Chặng 5: Phòng Luyện Thi & Tình Huống (15p)'
+    };
+    const sprintCompleted = { sprint1: false, sprint2: false, sprint3: false, sprint4: false, sprint5: false };
+
+    function switchTab(sprintId) {
+      currentSprint = sprintId;
+      document.querySelectorAll('.sprint-section').forEach(el => el.classList.add('hidden'));
+      const activeEl = document.getElementById(sprintId + '-content');
+      if (activeEl) activeEl.classList.remove('hidden');
+
+      // Update Nav Buttons
+      document.querySelectorAll('.sprint-nav-btn').forEach(btn => {
+        btn.classList.remove('border-cobalt', 'bg-cobalt/5', 'dark:bg-cobalt/15');
+        btn.classList.add('border-slate-200', 'dark:border-slate-800');
+      });
+      const activeBtn = document.getElementById('nav-' + sprintId);
+      if (activeBtn) {
+        activeBtn.classList.remove('border-slate-200', 'dark:border-slate-800');
+        activeBtn.classList.add('border-cobalt', 'bg-cobalt/5', 'dark:bg-cobalt/15');
+      }
+
+      document.getElementById('timerCurrentSprintName').innerText = sprintNames[sprintId];
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markSprintDone(sprintId) {
+      sprintCompleted[sprintId] = true;
+      const checkIcon = document.getElementById('check-' + sprintId);
+      if (checkIcon) checkIcon.classList.remove('hidden');
+      updateTotalProgress();
+    }
+
+    function updateTotalProgress() {
+      const completedCount = Object.values(sprintCompleted).filter(Boolean).length;
+      const percent = Math.round((completedCount / 5) * 100);
+      document.getElementById('topProgressBar').style.width = percent + '%';
+      document.getElementById('topProgressPercent').innerText = percent + '%';
+    }
+
+    // ACCORDION TOGGLE
+    function toggleAccordion(id) {
+      const el = document.getElementById(id);
+      const icon = document.getElementById('icon-' + id);
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      } else {
+        el.classList.add('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      }
+    }
+
+    // 180-MINUTE COUNTDOWN TIMER (POMODORO)
+    let totalSeconds = 180 * 60; // 180 minutes = 10,800s
+    let timerInterval = null;
+    let isRunning = false;
+
+    function formatTime(sec) {
+      const hrs = Math.floor(sec / 3600);
+      const mins = Math.floor((sec % 3600) / 60);
+      const secs = sec % 60;
+      if (hrs > 0) {
+        return `${hrs}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      }
+      return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function updateTimerDisplay() {
+      document.getElementById('pomodoroTime').innerText = formatTime(totalSeconds);
+    }
+
+    function toggleTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        document.getElementById('timerPlayText').innerText = 'Tạm dừng';
+        document.getElementById('timerPlayIcon').setAttribute('data-lucide', 'pause');
+        timerInterval = setInterval(() => {
+          if (totalSeconds > 0) {
+            totalSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            alert('Đã hết 180 phút học cấp tốc! Hãy vào Chặng 5 để làm bài thi sát hạch.');
+          }
+        }, 1000);
+      } else {
+        isRunning = false;
+        clearInterval(timerInterval);
+        document.getElementById('timerPlayText').innerText = 'Tiếp tục';
+        document.getElementById('timerPlayIcon').setAttribute('data-lucide', 'play');
+      }
+      lucide.createIcons();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      totalSeconds = 180 * 60;
+      updateTimerDisplay();
+      document.getElementById('timerPlayText').innerText = 'Bắt đầu';
+      document.getElementById('timerPlayIcon').setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+    }
+
+    function addTimerMinutes(mins) {
+      totalSeconds += mins * 60;
+      updateTimerDisplay();
+    }
+
+    // CHECKER: AI LÀ THƯƠNG NHÂN
+    function checkMerchantStatus() {
+      const s1 = document.getElementById('mSign1').checked;
+      const s2 = document.getElementById('mSign2').checked;
+      const s3 = document.getElementById('mSign3').checked;
+      const resBox = document.getElementById('merchantResultBox');
+      const resTitle = document.getElementById('merchantResultTitle');
+      const resDesc = document.getElementById('merchantResultDesc');
+
+      if (s1 && s2 && s3) {
+        resBox.className = "p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 flex items-start gap-3";
+        resTitle.className = "text-xs font-bold text-emerald-800 dark:text-emerald-300";
+        resTitle.innerText = "CHẮC CHẮN LÀ THƯƠNG NHÂN (Đủ 3 dấu hiệu pháp lý Điều 6 LTM)";
+        resDesc.className = "text-xs text-emerald-700 dark:text-emerald-400 mt-0.5";
+        resDesc.innerText = "Chủ thể có đầy đủ: Tư cách pháp lý + Hoạt động thương mại độc lập nhân danh mình + Thực hiện thường xuyên, nghề nghiệp và có đăng ký kinh doanh.";
+      } else {
+        resBox.className = "p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 flex items-start gap-3";
+        resTitle.className = "text-xs font-bold text-amber-800 dark:text-amber-300";
+        resTitle.innerText = "CHƯA PHẢI THƯƠNG NHÂN (Thiếu dấu hiệu bắt buộc)";
+        resDesc.className = "text-xs text-amber-700 dark:text-amber-400 mt-0.5";
+        resDesc.innerText = "Chỉ cần thiếu 1 trong 3 dấu hiệu (ví dụ: bán hàng rong không ĐKKD, hoặc cá nhân bán tài sản 1 lần) thì không được công nhận là thương nhân theo LTM 2005.";
+      }
+    }
+
+    function resetMerchantTester() {
+      document.getElementById('mSign1').checked = false;
+      document.getElementById('mSign2').checked = false;
+      document.getElementById('mSign3').checked = false;
+      checkMerchantStatus();
+    }
+
+    function loadSampleMerchant(type) {
+      if (type === 'binh') {
+        document.getElementById('mSign1').checked = true;
+        document.getElementById('mSign2').checked = true;
+        document.getElementById('mSign3').checked = true;
+      } else if (type === 'an') {
+        document.getElementById('mSign1').checked = true;
+        document.getElementById('mSign2').checked = true;
+        document.getElementById('mSign3').checked = false; // Bán rong không ĐKKD
+      } else if (type === 'm_online') {
+        document.getElementById('mSign1').checked = true;
+        document.getElementById('mSign2').checked = true;
+        document.getElementById('mSign3').checked = true; // 150 đơn/tháng bắt buộc phải ĐKKD
+      }
+      checkMerchantStatus();
+    }
+
+    // MATRIX FILTER
+    function filterMatrix(type) {
+      document.querySelectorAll('.matrix-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-cobalt', 'text-white');
+        btn.classList.add('bg-slate-100', 'dark:bg-navy-700', 'text-slate-600', 'dark:text-slate-300');
+      });
+      event.target.classList.remove('bg-slate-100', 'dark:bg-navy-700', 'text-slate-600', 'dark:text-slate-300');
+      event.target.classList.add('bg-cobalt', 'text-white');
+
+      const liabilityCols = document.querySelectorAll('.matrix-col-liability');
+      const shareCols = document.querySelectorAll('.matrix-col-shares');
+      const personaCols = document.querySelectorAll('.matrix-col-persona');
+
+      [...liabilityCols, ...shareCols, ...personaCols].forEach(el => el.classList.remove('bg-amber-100/60', 'dark:bg-amber-900/30'));
+
+      if (type === 'liability') liabilityCols.forEach(el => el.classList.add('bg-amber-100/60', 'dark:bg-amber-900/30'));
+      if (type === 'shares') shareCols.forEach(el => el.classList.add('bg-amber-100/60', 'dark:bg-amber-900/30'));
+      if (type === 'persona') personaCols.forEach(el => el.classList.add('bg-amber-100/60', 'dark:bg-amber-900/30'));
+    }
+
+    // SIMULATORS FOR VOTING
+    function simVoteTNHH() {
+      const val = parseInt(document.getElementById('tnhhRange').value);
+      document.getElementById('tnhhValLabel').innerText = val + '%';
+      
+      const res1 = document.getElementById('tnhhRes1');
+      if (val >= 65) {
+        res1.innerText = 'THÔNG QUA';
+        res1.className = 'font-bold text-emerald-600';
+      } else {
+        res1.innerText = 'KHÔNG ĐẠT';
+        res1.className = 'font-bold text-red-500';
+      }
+
+      const res2 = document.getElementById('tnhhRes2');
+      if (val >= 75) {
+        res2.innerText = 'THÔNG QUA';
+        res2.className = 'font-bold text-emerald-600';
+      } else {
+        res2.innerText = 'KHÔNG ĐẠT';
+        res2.className = 'font-bold text-red-500';
+      }
+    }
+
+    function simVoteCTCP() {
+      const val = parseInt(document.getElementById('ctcpRange').value);
+      document.getElementById('ctcpValLabel').innerText = val + '%';
+      
+      const res1 = document.getElementById('ctcpRes1');
+      if (val > 50) {
+        res1.innerText = 'THÔNG QUA';
+        res1.className = 'font-bold text-emerald-600';
+      } else {
+        res1.innerText = 'KHÔNG ĐẠT';
+        res1.className = 'font-bold text-red-500';
+      }
+
+      const res2 = document.getElementById('ctcpRes2');
+      if (val >= 65) {
+        res2.innerText = 'THÔNG QUA';
+        res2.className = 'font-bold text-emerald-600';
+      } else {
+        res2.innerText = 'KHÔNG ĐẠT';
+        res2.className = 'font-bold text-red-500';
+      }
+    }
+
+    // COMMERCIAL PENALTY CALCULATOR
+    function formatVND(num) {
+      return new Intl.NumberFormat('vi-VN').format(Math.round(num)) + ' đ';
+    }
+
+    function calculatePenalty() {
+      const totalVal = parseFloat(document.getElementById('calcTotalVal').value) || 0;
+      const breachVal = parseFloat(document.getElementById('calcBreachVal').value) || 0;
+      const agreeRate = parseFloat(document.getElementById('calcAgreeRate').value) || 0;
+      const damageVal = parseFloat(document.getElementById('calcDamageVal').value) || 0;
+
+      // Legal cap is 8% of breached portion value (Điều 301)
+      const maxAllowedRate = 8;
+      const appliedRate = Math.min(agreeRate, maxAllowedRate);
+      const legalPenalty = (breachVal * appliedRate) / 100;
+      const totalPayment = legalPenalty + damageVal;
+
+      document.getElementById('resPenaltyLegal').innerText = formatVND(legalPenalty);
+      document.getElementById('resDamageLegal').innerText = formatVND(damageVal);
+      document.getElementById('resTotalPayment').innerText = formatVND(totalPayment);
+
+      const warnEl = document.getElementById('resPenaltyWarn');
+      if (agreeRate > 8) {
+        warnEl.innerText = `Thỏa thuận ${agreeRate}% vượt trần 8% &rarr; chỉ chấp nhận 8% phần vi phạm (${formatVND(legalPenalty)}).`;
+        warnEl.className = 'text-[11px] text-amber-600 mt-1';
+      } else {
+        warnEl.innerText = `Thỏa thuận ${agreeRate}% hợp pháp (dưới trần 8%).`;
+        warnEl.className = 'text-[11px] text-emerald-600 mt-1';
+      }
+    }
+
+    function loadCalcExample11() {
+      document.getElementById('calcTotalVal').value = 5000000000;
+      document.getElementById('calcBreachVal').value = 1000000000;
+      document.getElementById('calcAgreeRate').value = 12;
+      document.getElementById('calcDamageVal').value = 150000000;
+      calculatePenalty();
+    }
+
+    // EXAM ARENA: 20 MCQS DATA
+    const quizData = [
+      {
+        q: "1. Trong trường hợp có sự khác nhau giữa quy định của Luật Thương mại 2005 và Luật Các tổ chức tín dụng (Luật chuyên ngành), văn bản nào được ưu tiên áp dụng?",
+        options: [
+          "A. Bộ luật Dân sự 2015",
+          "B. Luật Thương mại 2005",
+          "C. Luật Các tổ chức tín dụng (Luật chuyên ngành)",
+          "D. Do Tòa án tùy ý lựa chọn"
+        ],
+        ans: 2,
+        exp: "Theo khoản 1 Điều 4 Luật Thương mại 2005: Trường hợp luật chuyên ngành có quy định đặc thù về hoạt động thương mại thì áp dụng quy định của luật chuyên ngành đó."
+      },
+      {
+        q: "2. Chủ thể nào sau đây KHÔNG phải là thương nhân theo Luật Thương mại 2005?",
+        options: [
+          "A. Hộ kinh doanh vật liệu xây dựng có đăng ký kinh doanh",
+          "B. Công ty TNHH một thành viên",
+          "C. Cá nhân bán hàng rong, quà vặt thường xuyên không thuộc diện đăng ký kinh doanh",
+          "D. Hợp tác xã nông nghiệp"
+        ],
+        ans: 2,
+        exp: "Theo Điều 6 LTM 2005 và Nghị định 39/2007/NĐ-CP: Cá nhân hoạt động thương mại độc lập, thường xuyên không thuộc diện phải ĐKKD (bán rong, quà vặt, vé số...) không phải là thương nhân."
+      },
+      {
+        q: "3. Giao dịch mua bán giữa thương nhân với một bên không nhằm mục đích sinh lợi (như trường đại học công lập mua máy tính) chịu sự điều chỉnh của LTM khi nào?",
+        options: [
+          "A. Bắt buộc luôn luôn áp dụng Luật Thương mại",
+          "B. Chỉ áp dụng Luật Thương mại khi bên không nhằm mục đích sinh lợi chọn áp dụng",
+          "C. Bắt buộc luôn luôn áp dụng Luật Đấu thầu và không được áp dụng LTM",
+          "D. Không bao giờ được áp dụng LTM"
+        ],
+        ans: 1,
+        exp: "Theo khoản 3 Điều 1 LTM 2005: Hoạt động của bên không nhằm mục đích sinh lợi trong giao dịch với thương nhân chỉ áp dụng Luật Thương mại khi bên đó chọn áp dụng."
+      },
+      {
+        q: "4. Công ước Viên 1980 (CISG) về hợp đồng mua bán hàng hóa quốc tế có hiệu lực đối với Việt Nam từ thời điểm nào?",
+        options: [
+          "A. 01/01/2006",
+          "B. 01/01/2015",
+          "C. 01/01/2017",
+          "D. 01/7/2025"
+        ],
+        ans: 2,
+        exp: "Công ước Viên 1980 (CISG) chính thức có hiệu lực đối với Việt Nam từ ngày 01/01/2017, được ưu tiên áp dụng so với luật trong nước khi đáp ứng điều kiện."
+      },
+      {
+        q: "5. Chủ doanh nghiệp tư nhân (DNTN) chịu chế độ trách nhiệm tài sản như thế nào đối với các khoản nợ của doanh nghiệp?",
+        options: [
+          "A. Hữu hạn trong phạm vi số vốn đăng ký đầu tư",
+          "B. Vô hạn bằng toàn bộ tài sản của mình",
+          "C. Liên đới cùng các thành viên gia đình",
+          "D. Hữu hạn theo giá trị tài sản ròng của DNTN"
+        ],
+        ans: 1,
+        exp: "Theo khoản 1 Điều 188 Luật Doanh nghiệp 2020: Chủ DNTN tự chịu trách nhiệm bằng toàn bộ tài sản của mình về mọi hoạt động của doanh nghiệp (trách nhiệm vô hạn)."
+      },
+      {
+        q: "6. Điểm khác biệt CỐT LÕI giữa thành viên hợp danh và thành viên góp vốn trong công ty hợp danh là gì?",
+        options: [
+          "A. Thành viên hợp danh có thể là tổ chức, thành viên góp vốn phải là cá nhân",
+          "B. Thành viên hợp danh chịu trách nhiệm vô hạn và liên đới; thành viên góp vốn chịu trách nhiệm hữu hạn trong phạm vi vốn cam kết góp",
+          "C. Thành viên góp vốn được đại diện theo pháp luật cho công ty",
+          "D. Thành viên hợp danh không được tham gia quản lý công ty"
+        ],
+        ans: 1,
+        exp: "Theo Điều 177 LDN 2020: Thành viên hợp danh là cá nhân chịu trách nhiệm vô hạn và liên đới; thành viên góp vốn chỉ chịu trách nhiệm trong phạm vi số vốn đã cam kết góp."
+      },
+      {
+        q: "7. Thời hạn để các thành viên còn lại trong công ty TNHH 2 thành viên trở lên thực hiện quyền ưu tiên mua phần vốn góp chào bán nội bộ là bao lâu?",
+        options: [
+          "A. 15 ngày",
+          "B. 30 ngày",
+          "C. 45 ngày",
+          "D. 60 ngày"
+        ],
+        ans: 1,
+        exp: "Theo điểm b khoản 1 Điều 52 LDN 2020: Thời hạn ưu tiên mua nội bộ là 30 ngày kể từ ngày chào bán trước khi được phép chuyển nhượng cho người ngoài."
+      },
+      {
+        q: "8. Tại cuộc họp HĐTV công ty TNHH 2TV+, nghị quyết về việc sửa đổi, bổ sung Điều lệ công ty được thông qua khi đạt tỷ lệ biểu quyết tối thiểu là:",
+        options: [
+          "A. Từ 50% tổng số vốn góp của thành viên dự họp",
+          "B. Từ 65% tổng số vốn góp của thành viên dự họp",
+          "C. Từ 75% tổng số vốn góp của thành viên dự họp",
+          "D. 100% tất cả thành viên tán thành"
+        ],
+        ans: 2,
+        exp: "Theo điểm a khoản 3 Điều 59 LDN 2020: Sửa đổi Điều lệ, tổ chức lại, giải thể, bán tài sản &ge; 50% tổng TS phải được từ 75% vốn của thành viên dự họp tán thành."
+      },
+      {
+        q: "9. Trong thời hạn 03 năm kể từ ngày được cấp GCN ĐKDN, cổ phần phổ thông của cổ đông sáng lập CTCP được tự do chuyển nhượng cho ai?",
+        options: [
+          "A. Tự do chuyển nhượng cho bất kỳ ai trên thị trường",
+          "B. Chỉ được tự do chuyển nhượng cho cổ đông sáng lập khác",
+          "C. Chỉ được chuyển nhượng khi Ủy ban Chứng khoán chấp thuận",
+          "D. Hoàn toàn bị cấm chuyển nhượng cho mọi đối tượng"
+        ],
+        ans: 1,
+        exp: "Theo khoản 3 Điều 120 LDN 2020: Trong 03 năm đầu, CĐSL tự do chuyển nhượng CPPT cho CĐSL khác; chuyển nhượng cho người ngoài phải được ĐHĐCĐ chấp thuận."
+      },
+      {
+        q: "10. Theo điểm mới của Luật số 76/2025/QH15, tiêu chí xác định \"Chủ sở hữu hưởng lợi\" của doanh nghiệp là cá nhân sở hữu thực tế trực tiếp hoặc gián tiếp từ bao nhiêu vốn điều lệ?",
+        options: [
+          "A. Từ 10% vốn điều lệ",
+          "B. Từ 20% vốn điều lệ",
+          "C. Từ 25% vốn điều lệ trở lên",
+          "D. Từ 51% vốn điều lệ trở lên"
+        ],
+        ans: 2,
+        exp: "Luật số 76/2025/QH15 và Nghị định 168/2025/NĐ-CP quy định tiêu chí chủ sở hữu hưởng lợi là cá nhân sở hữu từ 25% vốn điều lệ trở lên hoặc có quyền chi phối DN."
+      },
+      {
+        q: "11. Điểm mới sửa đổi Luật Doanh nghiệp năm 2025 mở rộng quyền nào sau đây cho cán bộ, công chức, viên chức?",
+        options: [
+          "A. Được làm chủ DNTN bất kỳ",
+          "B. Được làm thành viên hợp danh không cần điều kiện",
+          "C. Được góp vốn, tham gia điều hành doanh nghiệp để thực hiện pháp luật về khoa học công nghệ, đổi mới sáng tạo và chuyển đổi số",
+          "D. Được tự do mở chuỗi nhà hàng kinh doanh"
+        ],
+        ans: 2,
+        exp: "Khoản 2 Điều 17 LDN được sửa đổi bởi Luật số 76/2025/QH15 bổ sung ngoại lệ cho CB, CC, VC được góp vốn/tham gia DN trong lĩnh vực KHCN, đổi mới sáng tạo, chuyển đổi số."
+      },
+      {
+        q: "12. Trong quá trình giao kết hợp đồng, nếu bên được đề nghị có văn bản phản hồi chấp thuận nhưng sửa đổi điều khoản về giá thì hiệu lực của văn bản này là gì?",
+        options: [
+          "A. Hợp đồng đã được giao kết theo mức giá cũ",
+          "B. Hợp đồng đã được giao kết theo mức giá mới sửa đổi",
+          "C. Coi như từ chối đề nghị cũ và tạo thành một đề nghị giao kết mới",
+          "D. Hai bên buộc phải nhờ Tòa án định giá"
+        ],
+        ans: 2,
+        exp: "Theo Điều 392 BLDS 2015: Khi bên được đề nghị sửa đổi nội dung chủ yếu thì coi như từ chối đề nghị cũ và tạo thành một đề nghị giao kết hợp đồng mới."
+      },
+      {
+        q: "13. Quy tắc pháp lý về sự im lặng của một bên khi nhận được đề nghị giao kết hợp đồng là:",
+        options: [
+          "A. Im lặng luôn mặc nhiên là đồng ý giao kết",
+          "B. Im lặng không được coi là chấp nhận đề nghị, trừ khi có thỏa thuận hoặc theo thói quen đã xác lập",
+          "C. Im lặng sau 03 ngày tự động coi là chấp nhận",
+          "D. Im lặng là hành vi vi phạm hợp đồng"
+        ],
+        ans: 1,
+        exp: "Theo khoản 2 Điều 393 BLDS 2015: Sự im lặng của bên được đề nghị không được coi là chấp nhận đề nghị giao kết hợp đồng, trừ khi có thỏa thuận hoặc thói quen."
+      },
+      {
+        q: "14. Loại hợp đồng nào sau đây bắt buộc phải lập thành văn bản theo Luật Thương mại 2005?",
+        options: [
+          "A. Mua bán hàng hóa thông thường trong nước",
+          "B. Môi giới thương mại",
+          "C. Hợp đồng đại lý thương mại",
+          "D. Cung ứng dịch vụ vận chuyển nội địa"
+        ],
+        ans: 2,
+        exp: "Theo Điều 168 LTM 2005, Hợp đồng đại lý thương mại bắt buộc phải lập thành văn bản hoặc bằng hình thức có giá trị tương đương."
+      },
+      {
+        q: "15. Hợp đồng mua bán hàng hóa có vận chuyển, các bên không thỏa thuận địa điểm giao hàng và thời điểm chuyển rủi ro. Rủi ro mất mát hư hỏng chuyển sang bên mua khi nào?",
+        options: [
+          "A. Khi hàng đã được vận chuyển đến kho của bên mua an toàn",
+          "B. Khi hàng được giao cho người vận chuyển đầu tiên",
+          "C. Khi bên mua thanh toán toàn bộ tiền hàng",
+          "D. Kể từ ngày bên bán xuất hóa đơn GTGT"
+        ],
+        ans: 1,
+        exp: "Theo Điều 59 LTM 2005: Nếu hợp đồng có vận chuyển nhưng không quy định địa điểm giao cụ thể thì rủi ro chuyển sang bên mua khi hàng được giao cho người vận chuyển đầu tiên."
+      },
+      {
+        q: "16. Trong quan hệ đại diện cho thương nhân, bên đại diện thực hiện hoạt động thương mại với tư cách nhân danh ai?",
+        options: [
+          "A. Nhân danh chính mình",
+          "B. Nhân danh bên giao đại diện",
+          "C. Không nhân danh bên nào",
+          "D. Nhân danh cơ quan nhà nước có thẩm quyền"
+        ],
+        ans: 1,
+        exp: "Theo Điều 141 LTM 2005: Đại diện cho thương nhân là việc một thương nhân nhận ủy quyền để thực hiện các hoạt động thương mại nhân danh bên giao đại diện."
+      },
+      {
+        q: "17. Mức phạt vi phạm tối đa đối với vi phạm nghĩa vụ hợp đồng thương mại (trừ dịch vụ giám định) theo Điều 301 LTM 2005 là bao nhiêu?",
+        options: [
+          "A. Tối đa 5% giá trị hợp đồng",
+          "B. Tối đa 8% giá trị phần nghĩa vụ hợp đồng bị vi phạm",
+          "C. Tối đa 12% giá trị phần nghĩa vụ bị vi phạm",
+          "D. Do các bên tự do thỏa thuận không có mức trần"
+        ],
+        ans: 1,
+        exp: "Điều 301 LTM 2005 quy định mức phạt vi phạm không quá 8% giá trị phần nghĩa vụ hợp đồng bị vi phạm."
+      },
+      {
+        q: "18. Theo Luật Phục hồi, phá sản 2025 (hiệu lực 01/3/2026), doanh nghiệp rơi vào tình trạng \"Nguy cơ mất khả năng thanh toán\" khi:",
+        options: [
+          "A. Không trả được nợ đã quá hạn trên 06 tháng",
+          "B. Không thanh toán được khoản nợ sẽ đến hạn trong 06 tháng, hoặc nợ đã đến hạn nhưng chưa quá 06 tháng",
+          "C. Bị Tòa án tuyên bố đình chỉ hoạt động",
+          "D. Bị ngân hàng khóa tài khoản thanh toán"
+        ],
+        ans: 1,
+        exp: "Điều 5 Luật Phục hồi, phá sản 2025 quy định: Nguy cơ mất KNTT là khoản nợ sẽ đến hạn trong 06 tháng hoặc nợ đã đến hạn chưa quá 06 tháng mà không trả được."
+      },
+      {
+        q: "19. Người quản lý doanh nghiệp không thực hiện nghĩa vụ nộp đơn yêu cầu phá sản khi DN mất KNTT quá 6 tháng có thể chịu chế tài nào?",
+        options: [
+          "A. Bị phạt tù chung thân",
+          "B. Phải bồi thường thiệt hại và có thể bị cấm đảm nhiệm chức vụ quản lý doanh nghiệp trong 03 năm",
+          "C. Bị tước quyền công dân vĩnh viễn",
+          "D. Bị tịch thu toàn bộ tài sản gia đình"
+        ],
+        ans: 1,
+        exp: "Theo Điều 84 Luật Phục hồi, phá sản 2025: Vi phạm nghĩa vụ nộp đơn phải bồi thường thiệt hại và có thể bị cấm đảm nhiệm chức vụ quản lý trong thời hạn 03 năm."
+      },
+      {
+        q: "20. Khi hợp đồng có thỏa thuận trọng tài thương mại hợp lệ và một bên khởi kiện ra Tòa án nhân dân, Tòa án sẽ xử lý như thế nào?",
+        options: [
+          "A. Tòa án bắt buộc phải thụ lý giải quyết vì Tòa án có thẩm quyền cao hơn",
+          "B. Tòa án phải từ chối thụ lý, trừ khi thỏa thuận trọng tài vô hiệu hoặc không thể thực hiện được",
+          "C. Tòa án chuyển hồ sơ cho Viện kiểm sát giải quyết",
+          "D. Tòa án yêu cầu hai bên phải hủy bỏ thỏa thuận trọng tài trước"
+        ],
+        ans: 1,
+        exp: "Theo Điều 6 Luật Trọng tài thương mại 2010: Có thỏa thuận trọng tài hợp lệ thì Tòa án phải từ chối thụ lý, bảo đảm hiệu lực chung thẩm của trọng tài."
+      }
+    ];
+
+    let userQuizAnswers = {};
+
+    function renderQuiz() {
+      const container = document.getElementById('quizQuestionsList');
+      if (!container) return;
+      container.innerHTML = quizData.map((item, qIdx) => `
+        <div class="p-4 rounded-xl bg-white dark:bg-navy-800 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <p class="font-bold text-xs text-navy-800 dark:text-white leading-relaxed">${item.q}</p>
+          <div class="space-y-1.5">
+            ${item.options.map((opt, oIdx) => `
+              <button onclick="selectQuizOption(${qIdx}, ${oIdx})" id="opt-btn-${qIdx}-${oIdx}" class="quiz-opt-btn w-full text-left p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-cobalt bg-slate-50/50 dark:bg-navy-900/40 text-xs transition flex items-center justify-between">
+                <span>${opt}</span>
+                <span id="opt-icon-${qIdx}-${oIdx}" class="shrink-0 ml-2"></span>
+              </button>
+            `).join('')}
+          </div>
+          <div id="quiz-exp-${qIdx}" class="hidden p-3 rounded-lg bg-blue-50/60 dark:bg-navy-700/60 border border-blue-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+            <span class="font-bold text-cobalt dark:text-blue-300 block mb-0.5">&bull; Căn cứ giải thích pháp luật:</span>
+            ${item.exp}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectQuizOption(qIdx, oIdx) {
+      if (userQuizAnswers[qIdx] !== undefined) return; // Prevent changing after select
+      userQuizAnswers[qIdx] = oIdx;
+      const isCorrect = oIdx === quizData[qIdx].ans;
+
+      const selectedBtn = document.getElementById(`opt-btn-${qIdx}-${oIdx}`);
+      const selectedIcon = document.getElementById(`opt-icon-${qIdx}-${oIdx}`);
+      const correctBtn = document.getElementById(`opt-btn-${qIdx}-${quizData[qIdx].ans}`);
+
+      if (isCorrect) {
+        selectedBtn.classList.remove('border-slate-200', 'bg-slate-50/50');
+        selectedBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'text-emerald-800', 'dark:text-emerald-300', 'font-bold');
+        selectedIcon.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>';
+      } else {
+        selectedBtn.classList.remove('border-slate-200', 'bg-slate-50/50');
+        selectedBtn.classList.add('border-red-500', 'bg-red-50', 'dark:bg-red-950/40', 'text-red-800', 'dark:text-red-300');
+        selectedIcon.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>';
+        
+        // Highlight correct one
+        correctBtn.classList.add('border-emerald-500', 'bg-emerald-50/60', 'dark:bg-emerald-950/30', 'text-emerald-700', 'dark:text-emerald-300', 'font-semibold');
+      }
+
+      // Show explanation
+      const expBox = document.getElementById(`quiz-exp-${qIdx}`);
+      if (expBox) expBox.classList.remove('hidden');
+
+      // Update score count
+      updateQuizScore();
+      lucide.createIcons();
+    }
+
+    function updateQuizScore() {
+      let score = 0;
+      Object.keys(userQuizAnswers).forEach(qIdx => {
+        if (userQuizAnswers[qIdx] === quizData[qIdx].ans) score++;
+      });
+      document.getElementById('quizScoreText').innerText = `${score} / 20 câu (${Math.round((score/20)*100)}%)`;
+      if (score >= 16) {
+        markSprintDone('sprint5');
+      }
+    }
+
+    function resetQuiz() {
+      userQuizAnswers = {};
+      document.getElementById('quizScoreText').innerText = '0 / 20 câu';
+      renderQuiz();
+      lucide.createIcons();
+    }
+
+    // EXAM ARENA TAB SWITCH (MCQS VS CASES)
+    function switchExamTab(tab) {
+      if (tab === 'mcq') {
+        document.getElementById('exam-mcq-container').classList.remove('hidden');
+        document.getElementById('exam-cases-container').classList.add('hidden');
+        document.getElementById('btn-exam-mcq').className = 'py-2.5 border-b-2 border-cobalt text-cobalt dark:text-blue-400 flex items-center gap-2';
+        document.getElementById('btn-exam-cases').className = 'py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-2';
+      } else {
+        document.getElementById('exam-mcq-container').classList.add('hidden');
+        document.getElementById('exam-cases-container').classList.remove('hidden');
+        document.getElementById('btn-exam-cases').className = 'py-2.5 border-b-2 border-cobalt text-cobalt dark:text-blue-400 flex items-center gap-2';
+        document.getElementById('btn-exam-mcq').className = 'py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-2';
+      }
+      lucide.createIcons();
+    }
+
+    function revealCaseSolution(caseId) {
+      const el = document.getElementById('sol-' + caseId);
+      if (el) el.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // CHEAT SHEET FAST FILTER SEARCH
+    function filterCheatSheet() {
+      const q = document.getElementById('cheatSearchInput').value.toLowerCase().trim();
+      document.querySelectorAll('.cheat-item').forEach(item => {
+        const text = item.innerText.toLowerCase();
+        if (text.includes(q)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // QUICK REF MOBILE MODAL TOGGLE
+    function toggleQuickRefModal() {
+      const sb = document.getElementById('quickRefSidebar');
+      if (sb.classList.contains('hidden')) {
+        sb.classList.remove('hidden');
+      } else {
+        sb.classList.add('hidden');
+      }
+    }
+
+    // INITIALIZE EVERYTHING ON LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuiz();
+      calculatePenalty();
+      simVoteTNHH();
+      simVoteCTCP();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
